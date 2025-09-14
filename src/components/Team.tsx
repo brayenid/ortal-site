@@ -21,8 +21,8 @@ export async function TeamChips({ title = 'Tim Kerja', limit, className = '', id
 
   return (
     <section id={idAnchor} className={className}>
-      {title ? <h2 className="h3 mb-3">{title}</h2> : null}
-      <p className="pb-4">Kenali Tim Kerja yang ada di Bagian Organisasi</p>
+      {title ? <h2 className="text-lg sm:text-xl h3 mb-3">{title}</h2> : null}
+      <p className="pb-4 text-sm sm:text-base">Kenali Tim Kerja yang ada di Bagian Organisasi</p>
 
       <div className="">
         {teams.length === 0 ? (
@@ -34,7 +34,7 @@ export async function TeamChips({ title = 'Tim Kerja', limit, className = '', id
                 key={t.id}
                 href={`/tim/${t.id}`}
                 title={t.name}
-                className="inline-flex items-center gap-2 rounded-full border border-slate-300 bg-slate-50 p-3 text-slate-800 hover:bg-slate-100 transition">
+                className="inline-flex items-center gap-2 rounded-full border border-slate-300 bg-slate-50 p-3 text-slate-800 hover:bg-slate-100 transition text-sm sm:text-base">
                 <span className="grid place-items-center size-5 rounded-full bg-blue-200 text-sm font-semibold text-slate-700">
                   {initial(t.name)}
                 </span>

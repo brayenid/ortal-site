@@ -40,8 +40,8 @@ export default function SkmCta({
                 {icon ?? <ClipboardCheck className="h-8 w-8 p-2 box-content" aria-hidden="true" />}
               </div>
               <div>
-                <h2 className="text-2xl font-extrabold leading-tight md:text-3xl">{title}</h2>
-                <p className="mt-1 text-white/90">{description}</p>
+                <h2 className="text-lg sm:text-xl font-extrabold leading-tight md:text-3xl">{title}</h2>
+                <p className="text-sm sm:text-base mt-1 text-white/90">{description}</p>
               </div>
             </div>
 

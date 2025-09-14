@@ -124,12 +124,11 @@ export default async function ArtikelDetailPage({ params }: PageParams) {
         <main className="lg:col-span-8 min-w-0">
           <Breadcrumbs items={crumbs} maxItemWidth={88} />
           <div className="space-y-2 mb-6">
-            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold leading-tight mb-2">{article.title}</h1>
-
+            <h1 className="text-lg sm:text-2xl lg:text-4xl font-extrabold leading-tight mb-2">{article.title}</h1>
             {article.category?.slug && (
               <Link
                 href={`/artikel?cat=${encodeURIComponent(article.category.slug)}`}
-                className="text-blue-600 hover:underline">
+                className="text-sm sm:text-base text-blue-600 hover:underline">
                 #{article.category.name ?? 'Umum'}
               </Link>
             )}

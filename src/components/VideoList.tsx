@@ -84,7 +84,7 @@ export async function VideoList({
   return (
     <section className={`container py-10 ${className}`}>
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-xl md:text-2xl font-bold !m-0">{title}</h2>
+        <h2 className="text-lg sm:text-xl font-bold !m-0">{title}</h2>
         {showViewAll ? (
           <Link target="_blank" href={viewAllHref} className="text-sm text-primary hover:underline">
             Lihat semua
@@ -114,7 +114,7 @@ export async function VideoList({
                     <Image src={thumb} alt={v.title} fill className="rounded-xl object-cover" />
                   </div>
                 ) : null}
-                <h3 className="font-semibold line-clamp-2">{v.title}</h3>
+                <h3 className="text-sm sm:text-base font-semibold line-clamp-2">{v.title}</h3>
                 <p className="text-xs text-slate-500 mt-1">
                   <time dateTime={v.createdAt.toISOString()}>
                     {v.createdAt.toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' })}
