@@ -1,35 +1,39 @@
+// src/app/tim/[id]/page.tsx
 import Link from 'next/link'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { prisma } from '@/lib/prisma'
 
-type Props = { params: { id: string } }
+type Props = { params: Promise<{ id: string }> }
 
 export const dynamic = 'force-dynamic'
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { id } = await params
   const team = await prisma.team.findUnique({
-    where: { id: params.id },
+    where: { id },
     select: { name: true }
   })
-  if (!team) return { title: 'Tim tidak ditemukan' }
+  if (!team) return { title: 'Tim tidak ditemukan', robots: { index: false, follow: false } }
   return { title: `${team.name} · Tim Kerja` }
 }
 
 const initial = (name: string) => name?.trim()?.[0]?.toUpperCase() ?? '#'
 
 export default async function TeamDetailPage({ params }: Props) {
+  const { id } = await params
+
   const [team, others] = await Promise.all([
-    prisma.team.findUnique({ where: { id: params.id } }),
+    prisma.team.findUnique({ where: { id } }),
     prisma.team.findMany({
-      where: { id: { not: params.id } },
+      where: { id: { not: id } },
       orderBy: { name: 'asc' },
       select: { id: true, name: true },
-      take: 20 // atur sesuai selera
+      take: 20
     })
   ])
 
-  if (!team) notFound()
+  if (!team) return notFound()
 
   return (
     <div className="container py-10">

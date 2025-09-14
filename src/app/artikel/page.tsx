@@ -8,29 +8,30 @@ import { ArticleCard } from '@/components/ArticleCard'
 
 export const dynamic = 'force-dynamic'
 
+type SearchObj = Record<string, string | string[] | undefined>
 type PageProps = {
-  searchParams?: Record<string, string | string[] | undefined>
+  // Next 15: searchParams adalah Promise
+  searchParams?: Promise<SearchObj>
 }
 
 export default async function ArtikelPage({ searchParams }: PageProps) {
-  const q = typeof searchParams?.q === 'string' ? searchParams!.q.trim() : ''
-  const cat = typeof searchParams?.cat === 'string' ? searchParams!.cat.trim() : '' // ⬅️ kategori (slug/teks)
-  const pageParam = typeof searchParams?.page === 'string' ? searchParams!.page : '1'
-  const perParam = typeof searchParams?.per === 'string' ? searchParams!.per : '9'
+  const sp = (await searchParams) ?? {}
+
+  const q = typeof sp.q === 'string' ? sp.q.trim() : ''
+  const cat = typeof sp.cat === 'string' ? sp.cat.trim() : '' // kategori (slug/teks)
+  const pageParam = typeof sp.page === 'string' ? sp.page : '1'
+  const perParam = typeof sp.per === 'string' ? sp.per : '9'
 
   const page = Math.max(1, parseInt(pageParam || '1', 10) || 1)
   const perPageRaw = Math.max(1, parseInt(perParam || '9', 10) || 9)
   const perPage = Math.min(perPageRaw, 30)
 
   // build filter
-  const where = {
+  const where: any = {
     published: true,
     ...(q
       ? {
-          OR: [
-            { title: { contains: q, mode: 'insensitive' as const } },
-            { content: { contains: q, mode: 'insensitive' as const } }
-          ]
+          OR: [{ title: { contains: q, mode: 'insensitive' } }, { content: { contains: q, mode: 'insensitive' } }]
         }
       : {}),
     ...(cat
@@ -38,15 +39,14 @@ export default async function ArtikelPage({ searchParams }: PageProps) {
           // match slug persis ATAU nama mengandung (case-insensitive)
           category: {
             is: {
-              OR: [{ slug: cat }, { name: { contains: cat, mode: 'insensitive' as const } }]
+              OR: [{ slug: cat.toLowerCase() }, { name: { contains: cat, mode: 'insensitive' } }]
             }
           }
         }
       : {})
-  } as const
+  }
 
   const total = await prisma.article.count({ where })
-
   const skip = (page - 1) * perPage
   const take = perPage
 
@@ -128,8 +128,8 @@ export default async function ArtikelPage({ searchParams }: PageProps) {
         </div>
       ) : (
         <div className="grid md:grid-cols-3 gap-6">
-          {articles.map((a, i) => (
-            <ArticleCard article={a} key={i} />
+          {articles.map((a) => (
+            <ArticleCard article={a} key={a.id} />
           ))}
         </div>
       )}
