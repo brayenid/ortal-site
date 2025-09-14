@@ -1,0 +1,138 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: only light;
+}
+
+/* ===========================
+   GLOBAL DEFAULTS (Tailwind @apply)
+   =========================== */
+
+html {
+  @apply scroll-smooth;
+}
+body {
+  @apply bg-white text-slate-800 antialiased;
+}
+
+p {
+  @apply leading-relaxed;
+}
+small {
+  @apply text-xs text-slate-500;
+}
+strong {
+  @apply font-semibold;
+}
+em {
+  @apply italic;
+}
+
+/* Heading */
+h1 {
+  @apply text-3xl font-bold tracking-tight;
+}
+h2 {
+  @apply text-2xl font-bold mt-6 mb-2;
+}
+h3 {
+  @apply text-xl font-semibold mt-5 mb-2;
+}
+h4 {
+  @apply text-lg font-semibold mt-4 mb-2;
+}
+
+/* Separator */
+hr {
+  @apply my-6 border-slate-200;
+}
+
+/* List */
+ul {
+  @apply list-disc pl-6 my-3 space-y-1;
+}
+ol {
+  @apply list-decimal pl-6 my-3 space-y-1;
+}
+li {
+  @apply leading-relaxed;
+}
+ul ul,
+ol ol {
+  @apply mt-1;
+}
+
+/* Kutipan */
+blockquote {
+  @apply my-4 pl-4 italic text-slate-700 border-l-4 border-slate-300;
+}
+
+/* Kode */
+code {
+  @apply rounded-md bg-slate-100 px-1.5 py-0.5 text-[0.9em] font-mono text-slate-700;
+}
+pre {
+  @apply bg-slate-100 rounded-xl p-4 overflow-x-auto text-sm;
+}
+kbd {
+  @apply border border-slate-300 bg-white rounded-md px-1 text-xs shadow-sm;
+}
+mark {
+  @apply bg-yellow-200;
+}
+
+/* Tabel */
+table {
+  @apply w-full text-left border-collapse my-4;
+}
+thead {
+  @apply sticky top-0;
+}
+th {
+  @apply bg-slate-50 text-slate-700 font-semibold border border-slate-200 px-3 py-2;
+}
+td {
+  @apply border border-slate-200 px-3 py-2;
+}
+
+/* Aksesibilitas */
+:focus-visible {
+  @apply outline-none ring-2 ring-primary/40;
+}
+::selection {
+  @apply bg-primary/15;
+}
+
+/* Placeholder untuk contenteditable */
+[contenteditable][data-placeholder]:empty::before {
+  content: attr(data-placeholder);
+  @apply text-slate-500;
+}
+
+.btn {
+  @apply inline-flex items-center gap-2 rounded-2xl px-4 py-2 font-medium bg-primary text-white hover:bg-blue-700 transition;
+}
+
+.card {
+  @apply rounded-2xl border border-slate-200 bg-white shadow-sm p-4;
+}
+
+.richtext {
+  @apply w-full min-h-40 rounded-xl border border-slate-300 p-3 focus:outline-none focus:ring-2 focus:ring-primary/30 max-w-none;
+}
+
+.richtext a {
+  @apply text-primary;
+}
+
+.richtext-btn {
+  @apply inline-flex text-sm border items-center gap-2 rounded-2xl px-4 py-2 bg-gray-50 text-gray-600 hover:bg-gray-100 transition;
+}
+
+/* --- Skip link --- */
+.skip-link {
+  @apply sr-only focus:not-sr-only fixed top-3 left-3 z-[100] rounded-lg !p-3
+         bg-primary text-white shadow outline-none;
+}
