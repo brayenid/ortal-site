@@ -79,7 +79,7 @@ export const SimpleWysiwyg = ({ value, onChange, placeholder }: SimpleWysiwygPro
   return (
     <div className="space-y-2">
       {/* Toolbar */}
-      <div className="flex flex-wrap items-center gap-2">
+      <div className="flex flex-wrap items-center gap-2 sticky top-0">
         {/* Block format selector */}
         <label className="text-xs text-slate-500">Format</label>
         <select

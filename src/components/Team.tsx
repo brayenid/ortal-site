@@ -38,7 +38,9 @@ export async function TeamChips({ title = 'Tim Kerja', limit, className = '', id
                 <span className="grid place-items-center size-5 rounded-full bg-blue-200 text-sm font-semibold text-slate-700">
                   {initial(t.name)}
                 </span>
-                <span className="truncate">{t.name}</span>
+                <span className="truncate min-w-0 max-w-[70vw] sm:max-w-[45vw] md:max-w-[30vw] lg:max-w-full">
+                  {t.name}
+                </span>
               </Link>
             ))}
           </div>

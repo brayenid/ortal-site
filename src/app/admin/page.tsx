@@ -27,7 +27,8 @@ export default async function AdminHome() {
           { href: '/admin/faq', label: 'Kelola FAQ' },
           { href: '/admin/jumbotron', label: 'Jumbotron' },
           { href: '/admin/video', label: 'Kelola Video' },
-          { href: '/admin/tim', label: 'Tim Kerja' }
+          { href: '/admin/tim', label: 'Tim Kerja' },
+          { href: '/admin/banner', label: 'Banner' }
         ].map((i) => (
           <Link key={i.href} href={i.href} className="card hover:shadow-md transition">
             <div className="text-lg font-semibold">{i.label}</div>

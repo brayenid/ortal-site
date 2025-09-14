@@ -31,7 +31,7 @@ export default async function Jumbotron({ children }: Props) {
               {/* Optional CTA */}
               {children ? <div className="mt-6 flex gap-3">{children}</div> : null}
 
-              <SearchBar placeholder="Cari judul atau isi artikel…" className="w-full max-w-96 mt-8" />
+              <SearchBar placeholder="Cari judul atau isi artikel…" className="w-full md:max-w-96 mt-8" />
             </div>
           </div>
         </div>

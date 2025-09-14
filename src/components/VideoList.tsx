@@ -84,7 +84,7 @@ export async function VideoList({
   return (
     <section className={`container py-10 ${className}`}>
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-xl md:text-2xl font-bold">{title}</h2>
+        <h2 className="text-xl md:text-2xl font-bold !m-0">{title}</h2>
         {showViewAll ? (
           <Link target="_blank" href={viewAllHref} className="text-sm text-primary hover:underline">
             Lihat semua

@@ -6,6 +6,7 @@ import Jumbotron from '@/components/Jumbotron'
 import SkmCta from '@/components/SkmCta'
 import { TeamChips } from '@/components/Team'
 import { VideoList } from '@/components/VideoList'
+import { BannerCarousel } from '@/components/BannerCarousel'
 
 const SITE_NAME = 'Bagian Organisasi Kutai Barat'
 const SITE_DESC = 'Selamat datang di website Bagian Organisasi Kutai Barat'
@@ -91,9 +92,9 @@ export default function HomePage() {
   return (
     <div>
       <Jumbotron />
-      <div className="container py-10">
-        <TeamChips className="mb-8" />
-      </div>
+
+      <BannerCarousel />
+      <TeamChips className="mb-8 container" />
 
       <div id="main" tabIndex={-1} aria-label="Daftar artikel">
         <ArticleList title="Artikel Terbaru" />

@@ -146,7 +146,9 @@ export function Navbar({ session, office, triggerVH = 1 }: Props) {
               <Link
                 key={l.href}
                 href={l.href}
-                className={`py-2 text-base ${mobileLinkText} ${pathname === l.href ? 'font-semibold underline' : ''}`}
+                className={`py-2 text-base ${mobileLinkText} ${
+                  pathname === l.href ? 'font-semibold !text-primary' : ''
+                }`}
                 onClick={() => setOpen(false)}>
                 {l.label}
               </Link>

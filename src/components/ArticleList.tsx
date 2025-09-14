@@ -23,8 +23,8 @@ export async function ArticleList({ categorySlug, title, limit = 6 }: Props) {
 
   return (
     <section className="container py-10">
-      <div className="flex items-end justify-between mb-4">
-        <h2 className="text-xl font-semibold">{title}</h2>
+      <div className="flex items-center justify-between mb-4">
+        <h2 className="text-xl font-semibold !p-0 !m-0">{title}</h2>
         <Link href="/artikel" className="text-sm text-primary hover:underline">
           Lihat semua
         </Link>
