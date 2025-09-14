@@ -44,7 +44,7 @@ export default function BookmarksClient() {
   return (
     <div className="container py-10">
       <div className="flex items-center justify-between gap-4 mb-6">
-        <h1 className="text-2xl font-bold">Artikel Tersimpan</h1>
+        <h1 className="text-lg sm:text-xl font-bold">Artikel Tersimpan</h1>
         {!!items?.length && (
           <button className="btn btn-outline" onClick={clear}>
             Bersihkan semua

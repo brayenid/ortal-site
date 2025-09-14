@@ -79,13 +79,13 @@ export default async function ArtikelPage({ searchParams }: PageProps) {
   return (
     <div className="container py-10">
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
-        <h1 className="text-2xl font-bold">Semua Artikel</h1>
+        <h1 className="text-lg sm:text-xl font-bold">Semua Artikel</h1>
         <SearchBar placeholder="Cari judul atau isi artikel…" className="w-full max-w-96 !text-gray-700" />
       </div>
 
       {/* Filter kategori (scrollable pills) */}
       <div className="mb-4 -mx-2 overflow-x-auto no-scrollbar">
-        <div className="px-2 flex items-center gap-2">
+        <div className="px-2 flex items-center gap-2 min-w-max pb-4">
           <Link
             href={buildHref(undefined)}
             className={`px-3 py-1.5 rounded-full border text-sm ${
