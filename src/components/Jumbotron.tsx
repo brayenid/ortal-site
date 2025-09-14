@@ -22,8 +22,8 @@ export default async function Jumbotron({ children }: Props) {
       <div className="relative">
         <div className="container">
           <div className="flex min-h-screen items-center py-16">
-            <div className="max-w-2xl text-white">
-              <h1 className="text-3xl md:text-6xl font-bold tracking-tight">{jumbotron.title}</h1>
+            <div className="max-w-2xl text-white text-center sm:text-left">
+              <h1 className="text-4xl md:text-6xl font-bold tracking-tight">{jumbotron.title}</h1>
               {jumbotron.subtitle ? (
                 <p className="mt-3 text-base md:text-lg text-white/90">{jumbotron.subtitle}</p>
               ) : null}

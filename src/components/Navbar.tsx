@@ -62,7 +62,6 @@ export function Navbar({ session, office, triggerVH = 1 }: Props) {
   const links = [
     { href: '/profil', label: 'Profil' },
     { href: '/artikel', label: 'Artikel' },
-    { href: '/faq', label: 'FAQ' },
     { href: '/bookmarks', label: 'Tersimpan' },
     ...(session?.user?.role === 'ADMIN' || session?.user?.role === 'EDITOR' ? [{ href: '/admin', label: 'Admin' }] : [])
   ]
@@ -102,7 +101,7 @@ export function Navbar({ session, office, triggerVH = 1 }: Props) {
             // eslint-disable-next-line @next/next/no-img-element
             <img src={office.logoUrl} alt={office.name} className="w-9 rounded" />
           ) : null}
-          <span className="truncate">{office?.name ?? 'Website Kantor'}</span>
+          <span className="truncate text-base sm:text-lg">{office?.name ?? 'Website Kantor'}</span>
         </Link>
 
         {/* Links desktop */}
@@ -116,7 +115,7 @@ export function Navbar({ session, office, triggerVH = 1 }: Props) {
 
         {/* Right actions */}
         <div className="ml-auto hidden lg:block">
-          <SignInOutButton />
+          <SignInOutButton variant={isHome && !scrolled ? 'on-dark' : 'on-light'} />
         </div>
 
         {/* Hamburger (mobile) */}
@@ -155,7 +154,7 @@ export function Navbar({ session, office, triggerVH = 1 }: Props) {
             ))}
             <div className={`my-2 h-px ${isHome && !scrolled ? 'bg-white/20' : 'bg-gray-200'}`} />
             <div className="py-2">
-              <SignInOutButton />
+              <SignInOutButton variant={isHome && !scrolled ? 'on-dark' : 'on-light'} />
             </div>
           </div>
         </div>

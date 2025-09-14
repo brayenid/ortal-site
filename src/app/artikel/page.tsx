@@ -1,12 +1,19 @@
-// src/app/artikel/page.tsx
 import Link from 'next/link'
-import Image from 'next/image'
 import { prisma } from '@/lib/prisma'
 import SearchBar from '@/components/SearchBar'
 import Pagination from '@/components/Pagination'
 import { ArticleCard } from '@/components/ArticleCard'
+import { Metadata } from 'next'
 
 export const dynamic = 'force-dynamic'
+
+const SITE_NAME = 'Bagian Organisasi - Artikel'
+const SITE_DESC = 'Selamat datang di website Bagian Organisasi Kutai Barat'
+
+export const metadata: Metadata = {
+  title: SITE_NAME,
+  description: SITE_DESC
+}
 
 type SearchObj = Record<string, string | string[] | undefined>
 type PageProps = {

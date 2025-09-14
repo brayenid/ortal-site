@@ -119,20 +119,49 @@ export async function POST(req: Request) {
 export async function PUT(req: Request) {
   try {
     const form = await req.formData()
-    const id = (form.get('id') as string) ?? ''
+    const id = (form.get('id') as string | null) ?? ''
     if (!id) return NextResponse.json({ error: 'ID wajib' }, { status: 400 })
 
     const existing = await prisma.banner.findUnique({ where: { id } })
     if (!existing) return NextResponse.json({ error: 'Banner tidak ditemukan' }, { status: 404 })
 
-    const title = ((form.get('title') as string) || existing.title).trim()
-    const description = ((form.get('description') as string) ?? existing.description ?? '').trim()
-    const linkUrlRaw = ((form.get('linkUrl') as string) ?? existing.linkUrl ?? '').trim()
-    const publishedStr = form.get('published') as string | null
-    const file = (form.get('image') as File) ?? null
-    const folder = (form.get('folder') as string) || FOLDER_DEFAULT
+    // --- Title (wajib)
+    const titleInput = (form.get('title') as string | null)?.trim() ?? ''
+    if (!titleInput) return NextResponse.json({ error: 'Judul wajib diisi' }, { status: 400 })
+    const title = titleInput
 
-    if (!title) return NextResponse.json({ error: 'Judul wajib diisi' }, { status: 400 })
+    // --- Description: izinkan kosong => NULL
+    //    undefined = tidak ada field di form (tetap), null = set NULL, string = update
+    const descInput = form.get('description') as string | null
+    const description =
+      descInput === null
+        ? undefined // tidak dikirim => biarkan nilai sebelumnya
+        : descInput.trim() === ''
+        ? null // dikirim tapi kosong => set NULL
+        : descInput.trim()
+
+    // --- Link: izinkan kosong => NULL, normalisasi skema (https) jika perlu
+    const linkInput = form.get('linkUrl') as string | null
+    let linkUrl: string | null | undefined
+    if (linkInput === null) {
+      linkUrl = undefined // tidak dikirim => biarkan
+    } else {
+      const raw = linkInput.trim()
+      if (raw === '') linkUrl = null // kosong => set NULL
+      else if (raw.startsWith('/') || raw.startsWith('#')) linkUrl = raw // internal/hash
+      else if (/^https?:\/\//i.test(raw)) linkUrl = raw // sudah http/https
+      else if (/^\/\//.test(raw)) linkUrl = 'https:' + raw // protocol-relative
+      else linkUrl = 'https://' + raw // tambahkan https
+    }
+
+    // --- Published: jika field dikirim, update; kalau tidak, biarkan
+    const publishedInput = form.get('published') as string | null
+    const published =
+      publishedInput === null ? undefined : ['on', 'true', '1', 'yes'].includes(publishedInput.toLowerCase())
+
+    // --- Gambar (opsional saat update)
+    const file = form.get('image') as File | null
+    const folder = ((form.get('folder') as string | null) ?? FOLDER_DEFAULT).trim() || FOLDER_DEFAULT
 
     let imageUrl: string | undefined
     let width: number | undefined
@@ -155,31 +184,26 @@ export async function PUT(req: Request) {
         return NextResponse.json({ error: `Rasio harus ~3:1 (±8%). Rasio gambar: ${ratio}` }, { status: 400 })
       }
 
-      // hapus lama + upload baru
+      // Hapus lama lalu upload baru
       if (existing.imageUrl) {
         try {
           await destroyCloudinaryByUrl(existing.imageUrl)
-        } catch {}
+        } catch {
+          // abaikan kegagalan hapus lama
+        }
       }
       imageUrl = await maybeUploadFile(file, folder)
       width = dims.width
       height = dims.height
     }
 
-    const linkUrl =
-      linkUrlRaw && /^(https?:)?\/\//i.test(linkUrlRaw)
-        ? linkUrlRaw.startsWith('http')
-          ? linkUrlRaw
-          : `https:${linkUrlRaw}`
-        : linkUrlRaw || undefined
-
     const updated = await prisma.banner.update({
       where: { id },
       data: {
         title,
-        description: description || undefined,
-        linkUrl,
-        ...(publishedStr !== null ? { published: publishedStr === 'on' } : {}),
+        ...(description === undefined ? {} : { description }), // bisa null
+        ...(linkUrl === undefined ? {} : { linkUrl }), // bisa null
+        ...(published === undefined ? {} : { published }),
         ...(imageUrl ? { imageUrl } : {}),
         ...(width ? { width } : {}),
         ...(height ? { height } : {})
@@ -187,7 +211,8 @@ export async function PUT(req: Request) {
     })
 
     return NextResponse.json({ ...updated, _meta: { message: 'Perubahan disimpan.' } })
-  } catch {
+  } catch (e) {
+    console.error(e)
     return NextResponse.json({ error: 'Gagal menyimpan perubahan' }, { status: 500 })
   }
 }
