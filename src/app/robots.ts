@@ -1,7 +1,6 @@
-// src/app/robots.ts
 import type { MetadataRoute } from 'next'
 
-const BASE_URL = process.env.NEXT_PUBLIC_APP_URL || process.env.NEXTAUTH_URL || 'http://localhost:3000'
+const BASE = process.env.NEXT_PUBLIC_APP_URL || process.env.NEXTAUTH_URL || 'https://organisasikubar.netlify.app'
 
 export default function robots(): MetadataRoute.Robots {
   return {
@@ -25,7 +24,7 @@ export default function robots(): MetadataRoute.Robots {
       { userAgent: 'AiCrawler', disallow: '/' },
       { userAgent: 'Bytespider', disallow: '/' }
     ],
-    sitemap: [`${BASE_URL}/sitemap.xml`],
-    host: BASE_URL
+    sitemap: [`${BASE}/sitemap.xml`],
+    host: BASE
   }
 }
