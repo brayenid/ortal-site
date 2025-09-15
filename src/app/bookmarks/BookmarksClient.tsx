@@ -44,10 +44,10 @@ export default function BookmarksClient() {
   return (
     <div className="container py-10">
       <div className="flex items-center justify-between gap-4 mb-6">
-        <h1 className="text-lg sm:text-xl font-bold">Artikel Tersimpan</h1>
+        <h1 className="text-lg sm:text-xl font-semibold">Artikel Tersimpan</h1>
         {!!items?.length && (
-          <button className="btn btn-outline" onClick={clear}>
-            Bersihkan semua
+          <button className="btn btn-outline font-normal text-xs sm:text-sm !px-2 sm:!px-4" onClick={clear}>
+            Bersihkan
           </button>
         )}
       </div>
@@ -74,14 +74,14 @@ export default function BookmarksClient() {
                     <Image src={a.coverImageUrl} alt={a.title} fill className="rounded-xl object-cover" />
                   </div>
                 )}
-                <div className="text-xs text-slate-500">{a.category?.name ?? 'Umum'}</div>
-                <h3 className="font-semibold line-clamp-2">{a.title}</h3>
+                <p className="text-xs text-blue-500">#{a.category?.name ?? 'Umum'}</p>
+                <h3 className="text-sm sm:text-base font-semibold line-clamp-2">{a.title}</h3>
               </Link>
 
               <div className="mt-3">
                 <button
                   type="button"
-                  className="btn btn-outline"
+                  className="btn btn-outline font-normal text-xs sm:text-sm !px-2 sm:!px-4"
                   onClick={() => remove(a.slug)}
                   aria-label="Hapus dari bookmark">
                   Hapus

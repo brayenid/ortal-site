@@ -1,5 +1,6 @@
 import { getJumbotron } from '@/lib/site'
 import SearchBar from './SearchBar'
+import Image from 'next/image'
 
 /* eslint-disable @next/next/no-img-element */
 type Props = {
@@ -23,6 +24,9 @@ export default async function Jumbotron({ children }: Props) {
         <div className="container">
           <div className="flex min-h-screen items-center py-16">
             <div className="max-w-2xl text-white text-center sm:text-left">
+              <div className="flex justify-center sm:justify-start mb-4">
+                <Image src="/berakhlak2.png" alt="berakhlak" width={200} height={200} />
+              </div>
               <h1 className="text-4xl md:text-6xl font-bold tracking-tight">{jumbotron.title}</h1>
               {jumbotron.subtitle ? (
                 <p className="mt-3 text-base md:text-lg text-white/90">{jumbotron.subtitle}</p>

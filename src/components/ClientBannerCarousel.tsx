@@ -160,7 +160,7 @@ export default function ClientBannerCarousel({ banners }: { banners: BannerLite[
                 <div className="relative aspect-[2/1] sm:aspect-[4/1]">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src={b.imageUrl} alt={b.title} className="w-full h-full object-cover" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-black/0" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-black/10 to-black/0" />
                   <div className="absolute inset-x-0 bottom-0 p-4 sm:p-6 text-white pointer-events-none">
                     <h2 className="text-sm sm:text-2xl font-bold drop-shadow">{b.title}</h2>
                     {b.description && <p className="text-sm sm:text-base opacity-95 line-clamp-2">{b.description}</p>}
