@@ -166,7 +166,7 @@ export const ArticleDrawer: React.FC<Props> = memo((props): JSX.Element => {
 
           <div className="mt-2 grid grid-cols-3 gap-2 text-sm">
             <div className="flex items-center gap-1">
-              <Filter size={12} className="text-slate-400" />
+              <Filter size={16} className="text-slate-400" />
               <select
                 value={filterCat}
                 onChange={(e) => setFilterCat(e.target.value)}
