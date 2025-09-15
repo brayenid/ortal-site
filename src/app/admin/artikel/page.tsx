@@ -4,21 +4,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import Link from 'next/link'
 import { SimpleWysiwyg } from '@/components/Wysiwyg'
 import { CategorySuggest } from '@/components/CategorySuggest'
-import {
-  Eye,
-  Copy,
-  Pencil,
-  Trash2,
-  Search,
-  Filter,
-  RefreshCcw,
-  Image as ImageIcon,
-  CheckCircle2,
-  Circle,
-  ListFilter,
-  Menu,
-  X
-} from 'lucide-react'
+import { Menu } from 'lucide-react'
 import { ArticleDrawer } from '@/components/Drawer'
 
 type CategoryLite = { name?: string | null; slug?: string | null } | null
@@ -156,7 +142,7 @@ export default function Page(): JSX.Element {
   const [sortBy, setSortBy] = useState<'newest' | 'title_asc' | 'title_desc'>('newest')
 
   // limit & load more
-  const [limit, setLimit] = useState<number>(1) // -1 = Semua
+  const [limit, setLimit] = useState<number>(20) // -1 = Semua
   const [visibleCount, setVisibleCount] = useState<number>(20)
   const STEP = 20
 
