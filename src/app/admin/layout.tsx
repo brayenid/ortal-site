@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     template: `%s · ${SITE_NAME}`
   },
   description: SITE_DESC,
-  robots: { index: false, follow: false }, // dashboard biasanya tidak diindeks
+  robots: { index: false, follow: false },
   alternates: { canonical: '/admin' },
   openGraph: {
     title: SITE_NAME,
