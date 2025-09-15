@@ -154,7 +154,7 @@ export default async function ArtikelDetailPage({ params }: PageParams) {
             </div>
           )}
 
-          <article className="prose max-w-none" dangerouslySetInnerHTML={{ __html: article.content }} />
+          <article className="prose max-w-none main-article" dangerouslySetInnerHTML={{ __html: article.content }} />
           <div className="my-10 border-t pt-10">
             <DisqusThread
               key={article.id}

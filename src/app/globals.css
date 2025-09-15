@@ -136,3 +136,7 @@ td {
   @apply sr-only focus:not-sr-only fixed top-3 left-3 z-[100] rounded-lg !p-3
          bg-primary text-white shadow outline-none;
 }
+
+.main-article a {
+  @apply text-primary hover:underline;
+}
