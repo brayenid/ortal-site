@@ -8,7 +8,13 @@ export function ArticleCard({ article }: { article: any }) {
       <Link key={article.id} href={`/artikel/${article.slug}`} className="card hover:shadow-md transition-shadow">
         {article.coverImageUrl && (
           <div className="relative aspect-[16/9] mb-3">
-            <Image src={article.coverImageUrl} alt={article.title} fill className="rounded-xl object-cover" />
+            <Image
+              loading="lazy"
+              src={article.coverImageUrl}
+              alt={article.title}
+              fill
+              className="rounded-xl object-cover"
+            />
           </div>
         )}
         <p className="text-xs text-blue-500">#{article.category?.name ?? 'Umum'}</p>
