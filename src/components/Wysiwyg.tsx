@@ -311,7 +311,7 @@ export const SimpleWysiwyg = ({
     const maxW = 1200
     const displayWidth = img.width && img.width < maxW ? img.width : maxW
     fig.innerHTML = `
-      <img src="${img.url}" alt="" loading="lazy" decoding="async" data-public-id="${img.publicId}"
+      <img src="${img.url}" alt="Bagian Organisasi" loading="lazy" decoding="async" data-public-id="${img.publicId}"
            style="max-width:100%;height:auto;width:${displayWidth}px" />
     `
     onChange(container.innerHTML)
@@ -328,7 +328,7 @@ export const SimpleWysiwyg = ({
     const displayWidth = img.width && img.width < maxW ? img.width : maxW
     const html = `
       <figure class="rt-figure my-3" data-public-id="${img.publicId}" data-align="left">
-        <img src="${img.url}" alt="" loading="lazy" decoding="async" data-public-id="${img.publicId}"
+        <img src="${img.url}" alt="Bagian Organisasi" loading="lazy" decoding="async" data-public-id="${img.publicId}"
              style="max-width:100%;height:auto;width:${displayWidth}px" />
       </figure>
     `

@@ -140,3 +140,7 @@ td {
 .main-article a {
   @apply text-primary hover:underline;
 }
+
+.main-article img {
+  @apply rounded-lg;
+}
