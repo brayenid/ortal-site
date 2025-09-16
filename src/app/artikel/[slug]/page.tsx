@@ -191,6 +191,15 @@ export default async function ArtikelDetailPage({ params }: PageParams) {
           </div>
         </aside>
       </div>
+      <style>
+        {`
+        .prose .rt-figure[data-align="left"]   { text-align: left; }
+.prose .rt-figure[data-align="center"] { text-align: center; }
+.prose .rt-figure[data-align="right"]  { text-align: right; }
+.prose .rt-figure img { display:inline-block; margin:0; }
+
+        `}
+      </style>
     </div>
   )
 }

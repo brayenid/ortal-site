@@ -520,6 +520,7 @@ export default function Page(): JSX.Element {
               onChange={setContent}
               placeholder="Tulis konten artikel di sini…"
               stickyOffset={72}
+              uploadFolder={`/inline`}
             />
           </div>
         </div>

@@ -33,7 +33,10 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
             <div className="flex justify-center w-full">
               <SocialLinks scheme="light" size="md" />
             </div>
-            <p>© {new Date().getFullYear()} Bagian Organisasi Kutai Barat.</p>
+            <p>
+              © {new Date().getFullYear()} Bagian Organisasi Kutai Barat. <br />
+              Dikembangkan Oleh Tim Bagian Organisasi
+            </p>
           </div>
         </footer>
         <TawkWidget />
