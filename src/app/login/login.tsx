@@ -1,9 +1,9 @@
 'use client'
 
 import { signIn } from 'next-auth/react'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
-import Link from 'next/link'
+import ReCAPTCHA from 'react-google-recaptcha'
 
 const HERO_URL = '/login-img.png'
 
@@ -17,51 +17,84 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | undefined>()
 
-  // Map error code NextAuth -> pesan ramah
+  // reCAPTCHA
+  const captchaRef = useRef<ReCAPTCHA>(null)
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null)
+  const [captchaKey, setCaptchaKey] = useState(0) // force remount
+
   const mapError = (code?: string): string => {
     switch (code) {
       case 'CredentialsSignin':
       case 'CredentialsSigninError':
         return 'Email atau password salah.'
+      case 'RecaptchaFailed':
+        return 'Verifikasi reCAPTCHA gagal. Coba lagi.'
       case 'AccessDenied':
         return 'Akses ditolak.'
       case 'OAuthAccountNotLinked':
         return 'Email ini sudah terdaftar dengan metode login lain.'
       default:
-        return 'Gagal masuk. Coba lagi.'
+        return 'Terjadi kesalahan. Coba lagi.'
     }
   }
 
-  // tangkap ?error= dari URL (mis. redirect guard)
   useEffect(() => {
     const urlErr = sp.get('error')
     if (urlErr) setError(mapError(urlErr))
   }, [sp])
+
+  const resetCaptcha = () => {
+    // reset token + visual checkmark
+    try {
+      captchaRef.current?.reset()
+    } catch {}
+    setCaptchaToken(null)
+    // beberapa browser/host kadang perlu remount agar UI ikut “tidak centang”
+    setCaptchaKey((k) => k + 1)
+  }
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
     setLoading(true)
     setError(undefined)
 
-    const res = await signIn('credentials', {
-      email,
-      password,
-      redirect: false // kita handle sendiri
-    })
-
-    if (!res) {
-      setError('Tidak dapat menghubungi server otentikasi.')
-      setLoading(false)
-      return
-    }
-    if (res.error) {
-      setError(mapError(res.error))
+    // pastikan sudah dicentang
+    const token = captchaToken || captchaRef.current?.getValue()
+    if (!token) {
+      setError('Harap centang reCAPTCHA terlebih dahulu.')
       setLoading(false)
       return
     }
 
-    router.push('/admin')
-    router.refresh()
+    try {
+      const res = await signIn('credentials', {
+        email,
+        password,
+        recaptcha: token, // kirim token ke NextAuth
+        redirect: false
+      })
+
+      if (!res) {
+        setError('Tidak dapat menghubungi server otentikasi.')
+        resetCaptcha()
+        setLoading(false)
+        return
+      }
+      if (res.error) {
+        setError(mapError(res.error))
+        // apapun errornya (password salah, dsb) token lama harus dibuang
+        resetCaptcha()
+        setLoading(false)
+        return
+      }
+
+      router.push('/admin')
+      router.refresh()
+    } catch {
+      setError('Terjadi kesalahan. Coba lagi.')
+      resetCaptcha()
+      setLoading(false)
+    }
   }
 
   return (
@@ -91,7 +124,6 @@ export default function LoginPage() {
             </div>
           </div>
 
-          {/* Panel form */}
           <div className="p-6 sm:p-8">
             <div className="mb-6">
               <h1 className="text-2xl font-bold">Masuk</h1>
@@ -100,10 +132,7 @@ export default function LoginPage() {
 
             <form onSubmit={onSubmit} className="space-y-4" noValidate>
               {error && (
-                <div
-                  role="alert"
-                  aria-live="polite"
-                  className="rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+                <div role="alert" className="rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
                   {error}
                 </div>
               )}
@@ -122,7 +151,6 @@ export default function LoginPage() {
                   autoComplete="email"
                   className="w-full rounded-xl border-slate-300"
                   placeholder="nama@contoh.go.id"
-                  aria-invalid={!!error}
                 />
               </div>
 
@@ -141,7 +169,6 @@ export default function LoginPage() {
                     autoComplete="current-password"
                     className="w-full rounded-xl border-slate-300 pr-12"
                     placeholder="Masukan password"
-                    aria-invalid={!!error}
                   />
                   <button
                     type="button"
@@ -152,6 +179,16 @@ export default function LoginPage() {
                   </button>
                 </div>
               </div>
+
+              {/* reCAPTCHA v2 Checkbox */}
+              <ReCAPTCHA
+                key={captchaKey}
+                ref={captchaRef}
+                sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY!}
+                onChange={(tok) => setCaptchaToken(tok)}
+                onExpired={() => setCaptchaToken(null)}
+                onErrored={() => setCaptchaToken(null)}
+              />
 
               <div className="flex items-center justify-between">
                 <span className="text-xs text-slate-500">Pastikan Anda adalah admin yang berwenang.</span>
