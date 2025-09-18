@@ -1,4 +1,5 @@
-import { NextRequest, NextResponse } from 'next/server'
+// src/app/api/admin/links/[id]/route.ts
+import { NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authConfig } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
@@ -16,11 +17,12 @@ const assertCanManage = async () => {
   }
 }
 
-export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
+export async function PATCH(req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
     await assertCanManage()
-    const id = String(params.id)
+    const id = String((await params).id)
     const body = await req.json().catch(() => ({}))
+    // jika PATCH ingin parsial, gunakan .partial(); jika wajib lengkap, biarkan seperti ini
     const parsed = linkItemSchema.safeParse(body)
     if (!parsed.success) {
       return NextResponse.json({ error: parsed.error.flatten() }, { status: 400 })
@@ -59,10 +61,10 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
   }
 }
 
-export async function DELETE(_: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
     await assertCanManage()
-    await prisma.link.delete({ where: { id: String(params.id) } })
+    await prisma.link.delete({ where: { id: String((await params).id) } })
     return NextResponse.json({ ok: true })
   } catch (e: any) {
     if (e instanceof Response) return e
