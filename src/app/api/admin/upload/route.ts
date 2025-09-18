@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
-import { authConfig } from '@/lib/auth' // pastikan path ini sesuai di project kamu
+import { authConfig } from '@/lib/auth'
 import { v2 as cloudinary } from 'cloudinary'
 
 /** WAJIB Node.js runtime (cloudinary butuh Node) */

@@ -5,47 +5,70 @@ export const dynamic = 'force-dynamic'
 
 type Props = {
   title?: string
+  subtitle?: string
   limit?: number
   className?: string
   idAnchor?: string // untuk anchor di beranda (#tim)
+  /** jumlah kolom responsif: 1 | 2 | 3 | 4 (default 3) */
+  columns?: 1 | 2 | 3 | 4
 }
 
 const initial = (name: string) => name?.trim()?.[0]?.toUpperCase() ?? '#'
 
-export async function TeamChips({ title = 'Tim Kerja', limit, className = '', idAnchor = 'tim' }: Props) {
+export async function TeamChips({
+  title = 'Tim Kerja',
+  subtitle = 'Kenali Tim Kerja yang ada di Bagian Organisasi',
+  limit,
+  className = '',
+  idAnchor = 'tim',
+  columns = 3
+}: Props) {
   const teams = await prisma.team.findMany({
     ...(limit ? { take: limit } : {}),
     orderBy: { name: 'asc' },
     select: { id: true, name: true }
   })
 
+  // grid responsif mirip komponen daftar tautan
+  const gridCols =
+    columns === 1
+      ? 'grid-cols-1'
+      : columns === 2
+      ? 'grid-cols-1 sm:grid-cols-2'
+      : columns === 4
+      ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-4'
+      : 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'
+
   return (
     <section id={idAnchor} className={className}>
-      {title ? <h2 className="text-lg sm:text-xl h3 mb-3">{title}</h2> : null}
-      <p className="pb-4 text-sm sm:text-base">Kenali Tim Kerja yang ada di Bagian Organisasi</p>
+      {title ? <h2 className="h3 mb-2 text-lg sm:text-xl">{title}</h2> : null}
+      {subtitle ? <p className="pb-4 text-sm sm:text-base">{subtitle}</p> : null}
 
-      <div className="">
-        {teams.length === 0 ? (
-          <div className="text-sm text-slate-500">Belum ada tim.</div>
-        ) : (
-          <div className="flex flex-wrap gap-2">
-            {teams.map((t) => (
-              <Link
-                key={t.id}
-                href={`/tim/${t.id}`}
-                title={t.name}
-                className="inline-flex items-center gap-2 rounded-full border border-slate-300 bg-slate-50 p-3 text-slate-800 hover:bg-slate-100 transition text-sm sm:text-base">
-                <span className="grid place-items-center size-5 rounded-full bg-blue-200 text-sm font-semibold text-slate-700">
+      {teams.length === 0 ? (
+        <div className="text-sm text-slate-500">Belum ada tim.</div>
+      ) : (
+        <div className={`grid gap-3 ${gridCols}`}>
+          {teams.map((t) => (
+            <Link
+              key={t.id}
+              href={`/tim/${t.id}`}
+              title={t.name}
+              className="group rounded-xl border border-slate-200 bg-white transition hover:-translate-y-0.5 hover:shadow-md">
+              <div className="flex items-center gap-3 px-4 py-3">
+                {/* badge inisial: menyamakan posisi ikon di daftar tautan */}
+                <span className="grid size-8 place-items-center rounded-full bg-blue-100 text-sm font-semibold text-blue-700">
                   {initial(t.name)}
                 </span>
-                <span className="truncate min-w-0 max-w-[70vw] sm:max-w-[45vw] md:max-w-[30vw] lg:max-w-full">
-                  {t.name}
-                </span>
-              </Link>
-            ))}
-          </div>
-        )}
-      </div>
+                <div className="min-w-0">
+                  <div className="truncate text-sm font-semibold text-slate-800 group-hover:text-slate-900">
+                    {t.name}
+                  </div>
+                </div>
+              </div>
+            </Link>
+          ))}
+        </div>
+      )}
     </section>
   )
 }

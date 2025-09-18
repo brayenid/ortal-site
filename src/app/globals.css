@@ -112,7 +112,7 @@ td {
 }
 
 .btn {
-  @apply inline-flex items-center gap-2 rounded-2xl px-4 py-2 font-medium bg-primary text-white hover:bg-blue-700 transition;
+  @apply rounded-lg bg-primary px-3 py-1.5 text-base font-medium text-white hover:bg-blue-700 disabled:opacity-50;
 }
 
 .card {

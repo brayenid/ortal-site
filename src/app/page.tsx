@@ -7,6 +7,7 @@ import SkmCta from '@/components/SkmCta'
 import { TeamChips } from '@/components/Team'
 import { VideoList } from '@/components/VideoList'
 import { BannerCarousel } from '@/components/BannerCarousel'
+import LinksShowcase from '@/components/LinksShowcase'
 
 const SITE_NAME = 'Bagian Organisasi Kutai Barat'
 const SITE_DESC = 'Selamat datang di website Bagian Organisasi Kutai Barat'
@@ -94,6 +95,8 @@ export default function HomePage() {
       <Jumbotron />
 
       <BannerCarousel />
+      <LinksShowcase variant="card" color="primary" size="md" iconPosition="left" columns={3} />
+
       <TeamChips className="mb-8 container" />
 
       <div id="main" tabIndex={-1} aria-label="Daftar artikel">

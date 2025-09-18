@@ -112,8 +112,29 @@ model Banner {
   @@index([published, order, createdAt])
 }
 
+model Link {
+  id          String    @id @default(cuid())
+  label       String
+  url         String
+  newTab      Boolean   @default(true)
+  order       Int       @default(0)
+  iconKind    IconKind?
+  iconName    String?
+  iconSvg     String?
+  description String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([order])
+}
+
 enum Role {
   ADMIN
   EDITOR
   USER
+}
+
+enum IconKind {
+  LUCIDE
+  SVG
 }
