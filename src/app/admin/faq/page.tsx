@@ -140,7 +140,7 @@ export default function FaqAdminPage() {
       <NoticeToast notice={notice} onClose={() => setNotice(null)} />
 
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold">Kelola FAQ</h1>
+        <h1 className="text-lg font-semibold tracking-tight text-slate-800">Kelola FAQ</h1>
         <Link href="/admin" className="text-sm text-secondary">
           ← Kembali
         </Link>

@@ -210,7 +210,7 @@ export default function VideoAdminPage() {
       <NoticeToast notice={notice} onClose={() => setNotice(null)} />
 
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold">Kelola Video</h1>
+        <h1 className="text-lg font-semibold tracking-tight text-slate-800">Kelola Video</h1>
         <Link href="/admin" className="text-sm text-secondary">
           ← Kembali
         </Link>

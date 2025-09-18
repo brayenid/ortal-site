@@ -222,7 +222,7 @@ export const ArticleDrawer: React.FC<Props> = memo((props): JSX.Element => {
         {/* List */}
         <div className="h-[calc(100vh-170px)] overflow-y-auto p-3 space-y-2">
           {loading ? (
-            <div className="text-slate-500 p-2">Memuat…</div>
+            <div className="text-slate-500 p-2 text-xs">Memuat…</div>
           ) : visibleItems.length ? (
             visibleItems.map((a) => {
               const dateStr: string = a.createdAt
@@ -257,25 +257,25 @@ export const ArticleDrawer: React.FC<Props> = memo((props): JSX.Element => {
                         <Link
                           href={`/artikel/${a.slug}`}
                           target="_blank"
-                          className="btn !px-2 !py-1 text-xs flex items-center">
+                          className="btn !px-2 !py-1 !text-xs flex items-center">
                           <Eye size={14} />
                           <span className="ml-1">Lihat</span>
                         </Link>
 
-                        <button className="btn !px-2 !py-1 text-xs flex items-center" onClick={() => void fillForm(a)}>
+                        <button className="btn !px-2 !py-1 !text-xs flex items-center" onClick={() => void fillForm(a)}>
                           <Pencil size={14} />
                           <span className="ml-1">Edit</span>
                         </button>
 
                         <button
-                          className="btn !px-2 !py-1 text-xs !bg-red-600 hover:!bg-red-700 flex items-center"
+                          className="btn !px-2 !py-1 !text-xs !bg-red-600 hover:!bg-red-700 flex items-center"
                           onClick={() => void onDelete(a.id)}>
                           <Trash2 size={14} />
                           <span className="ml-1">Hapus</span>
                         </button>
 
                         <button
-                          className="btn !px-2 !py-1 text-xs flex items-center"
+                          className="btn !px-2 !py-1 !text-xs flex items-center"
                           onClick={async () => {
                             try {
                               await navigator.clipboard.writeText(`${location.origin}/artikel/${a.slug}`)

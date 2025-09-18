@@ -149,7 +149,7 @@ export default function ProfilePage() {
       <NoticeToast notice={notice} onClose={() => setNotice(null)} />
 
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold">Profil Kantor</h1>
+        <h1 className="text-lg font-semibold tracking-tight text-slate-800">Profil Kantor</h1>
         <Link href="/admin" className="text-sm text-secondary">
           ← Kembali
         </Link>

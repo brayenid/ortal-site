@@ -358,7 +358,7 @@ export default function Page(): JSX.Element {
             onClick={() => setDrawerOpen(true)}>
             <Menu size={18} />
           </button>
-          <h1 className="text-2xl font-bold">Kelola Artikel</h1>
+          <h1 className="text-lg font-semibold tracking-tight text-slate-800">Kelola Artikel</h1>
           <span className="text-sm text-slate-500 hidden sm:inline">({items.length} total)</span>
         </div>
         <Link href="/admin" className="text-sm text-secondary">
