@@ -14,7 +14,8 @@ import {
   Users2,
   Image as ImageIcon,
   ChevronRight,
-  Link as Links
+  Link as Links,
+  User
 } from 'lucide-react'
 
 const SITE_NAME = 'Dashboard Admin'
@@ -39,7 +40,8 @@ export default async function AdminHome() {
     { href: '/admin/video', label: 'Kelola Video', icon: Video, color: 'bg-rose-50 text-rose-600' },
     { href: '/admin/tim', label: 'Tim Kerja', icon: Users2, color: 'bg-teal-50 text-teal-600' },
     { href: '/admin/banner', label: 'Banner', icon: ImageIcon, color: 'bg-sky-50 text-sky-600' },
-    { href: '/admin/links', label: 'Daftar Tautan', icon: Links, color: 'bg-rose-50 text-rose-600' }
+    { href: '/admin/links', label: 'Daftar Tautan', icon: Links, color: 'bg-rose-50 text-rose-600' },
+    { href: '/admin/users', label: 'Daftar Akun', icon: User, color: 'bg-lime-50 text-lime-600' }
   ] as const
 
   return (

@@ -5,8 +5,7 @@ import { LinksTable } from '@/components/LinksTable'
 import type { LinkRow } from '@/types/links'
 import type { IconKind } from '@prisma/client'
 import Link from 'next/link'
-
-type Notice = { type: 'success' | 'error'; text: string } | null
+import NoticeToast, { Notice } from '@/components/Toast'
 
 export default function AdminLinksPage(): JSX.Element {
   const [rows, setRows] = React.useState<LinkRow[]>([])
@@ -173,16 +172,7 @@ export default function AdminLinksPage(): JSX.Element {
         </div>
       </div>
 
-      {notice && (
-        <div
-          className={`mb-3 rounded-xl border px-3 py-2 text-sm ${
-            notice.type === 'success'
-              ? 'border-emerald-200 bg-emerald-50 text-emerald-700'
-              : 'border-red-200 bg-red-50 text-red-700'
-          }`}>
-          {notice.text}
-        </div>
-      )}
+      <NoticeToast notice={notice} onClose={() => setNotice(null)} />
 
       {loading ? <div className="text-sm text-slate-500">Memuat…</div> : <LinksTable value={rows} onChange={setRows} />}
     </div>
