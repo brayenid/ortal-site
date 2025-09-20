@@ -2,8 +2,22 @@ import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { maybeUploadFile } from '@/app/api/_helpers'
 import { v2 as cloudinary } from 'cloudinary'
+import { getServerSession } from 'next-auth'
+import { authConfig } from '@/lib/auth'
 
-/* ---- util: parse & destroy Cloudinary (ikuti pola artikel/pegawai) ---- */
+export const runtime = 'nodejs'
+export const dynamic = 'force-dynamic'
+
+async function getActor() {
+  const session = await getServerSession(authConfig)
+  const role = (session as any)?.user?.role as string | undefined
+  if (!session || !['ADMIN', 'EDITOR'].includes(role || '')) {
+    throw new Response('Unauthorized', { status: 401 })
+  }
+  return (session as any).user.id as string
+}
+
+/* ---- util: parse & destroy Cloudinary ---- */
 const parseCloudinaryPublicId = (secureUrl?: string | null) => {
   if (!secureUrl) return null
   try {
@@ -40,9 +54,11 @@ export async function GET() {
   }
 }
 
-/* ---------------- PUT (buat/ubah profil id=1) ---------------- */
+/* ---------------- PUT (buat/ubah profil id=1) + audit createdById/updatedById ---------------- */
 export async function PUT(req: Request) {
   try {
+    const actorId = await getActor()
+
     const form = await req.formData()
     const name = (form.get('name') as string) ?? ''
     const address = ((form.get('address') as string) ?? '').trim()
@@ -57,7 +73,6 @@ export async function PUT(req: Request) {
       return NextResponse.json({ error: 'Nama kantor wajib diisi' }, { status: 400 })
     }
 
-    // parse social JSON (opsional)
     let social: any | undefined
     if (socialStr) {
       try {
@@ -69,7 +84,6 @@ export async function PUT(req: Request) {
 
     const existing = await prisma.officeProfile.findUnique({ where: { id: 1 } })
 
-    // upload logo baru jika ada file baru
     const hasNewLogo = logo && logo.size > 0
     let logoUrl: string | undefined
     if (hasNewLogo) {
@@ -93,12 +107,13 @@ export async function PUT(req: Request) {
 
     const saved = await prisma.officeProfile.upsert({
       where: { id: 1 },
-      update: payload,
-      create: { id: 1, ...payload }
+      create: { id: 1, ...payload, createdById: actorId, updatedById: actorId },
+      update: { ...payload, updatedById: actorId }
     })
 
     return NextResponse.json({ ...saved, _meta: { message: 'Profil disimpan.' } })
-  } catch {
+  } catch (e: any) {
+    if (e instanceof Response) return e
     return NextResponse.json({ error: 'Gagal menyimpan profil' }, { status: 500 })
   }
 }

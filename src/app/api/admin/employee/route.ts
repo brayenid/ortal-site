@@ -2,6 +2,20 @@ import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { maybeUploadFile } from '@/app/api/_helpers'
 import { v2 as cloudinary } from 'cloudinary'
+import { getServerSession } from 'next-auth'
+import { authConfig } from '@/lib/auth'
+
+export const runtime = 'nodejs'
+export const dynamic = 'force-dynamic'
+
+async function getActor() {
+  const session = await getServerSession(authConfig)
+  const role = (session as any)?.user?.role as string | undefined
+  if (!session || !['ADMIN', 'EDITOR'].includes(role || '')) {
+    throw new Response('Unauthorized', { status: 401 })
+  }
+  return (session as any).user.id as string
+}
 
 /* -------- util cloudinary (sesuai pola artikel/profile) -------- */
 const parseCloudinaryPublicId = (secureUrl?: string | null) => {
@@ -52,9 +66,11 @@ export async function GET(req: Request) {
   }
 }
 
-/* -------- POST: create -------- */
+/* -------- POST: create (audit createdById & updatedById) -------- */
 export async function POST(req: Request) {
   try {
+    const actorId = await getActor()
+
     const form = await req.formData()
     const name = (form.get('name') as string) ?? ''
     const position = (form.get('position') as string) ?? ''
@@ -69,18 +85,27 @@ export async function POST(req: Request) {
     const photoUrl = hasPhoto ? await maybeUploadFile(photo!, folder) : undefined
 
     const created = await prisma.employee.create({
-      data: { name, position, photoUrl }
+      data: {
+        name,
+        position,
+        photoUrl,
+        createdById: actorId,
+        updatedById: actorId
+      }
     })
 
     return NextResponse.json({ ...created, _meta: { message: 'Pegawai berhasil ditambahkan.' } }, { status: 201 })
-  } catch {
+  } catch (e: any) {
+    if (e instanceof Response) return e
     return NextResponse.json({ error: 'Gagal menambah pegawai' }, { status: 500 })
   }
 }
 
-/* -------- PUT: update (pertahankan foto lama bila tak diunggah) -------- */
+/* -------- PUT: update (pertahankan foto lama; audit updatedById) -------- */
 export async function PUT(req: Request) {
   try {
+    const actorId = await getActor()
+
     const form = await req.formData()
     const id = (form.get('id') as string) ?? ''
     const name = (form.get('name') as string) ?? ''
@@ -112,20 +137,24 @@ export async function PUT(req: Request) {
       data: {
         name,
         position,
-        ...(hasNewPhoto ? { photoUrl } : {}) // pertahankan jika tidak diupload
+        ...(hasNewPhoto ? { photoUrl } : {}),
+        updatedById: actorId
       }
     })
 
     return NextResponse.json({ ...updated, _meta: { message: 'Perubahan disimpan.' } })
   } catch (e: any) {
+    if (e instanceof Response) return e
     if (e?.code === 'P2025') return NextResponse.json({ error: 'Pegawai tidak ditemukan' }, { status: 404 })
     return NextResponse.json({ error: 'Gagal memperbarui pegawai' }, { status: 500 })
   }
 }
 
-/* -------- DELETE: hapus + hapus foto Cloudinary -------- */
+/* -------- DELETE: hapus + hapus foto Cloudinary (auth) -------- */
 export async function DELETE(req: Request) {
   try {
+    await getActor()
+
     const body = (await req.json()) as { id?: string }
     if (!body?.id) return NextResponse.json({ error: 'ID wajib' }, { status: 400 })
 
@@ -143,7 +172,8 @@ export async function DELETE(req: Request) {
 
     await prisma.employee.delete({ where: { id: body.id } })
     return NextResponse.json({ ok: true, _meta: { message: 'Pegawai dihapus.' } })
-  } catch {
+  } catch (e: any) {
+    if (e instanceof Response) return e
     return NextResponse.json({ error: 'Gagal menghapus pegawai' }, { status: 500 })
   }
 }

@@ -2,6 +2,21 @@ import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { maybeUploadFile } from '@/app/api/_helpers'
 import { v2 as cloudinary } from 'cloudinary'
+import { getServerSession } from 'next-auth'
+import { authConfig } from '@/lib/auth'
+
+export const runtime = 'nodejs'
+export const dynamic = 'force-dynamic'
+
+async function getActor() {
+  const session = await getServerSession(authConfig)
+  const role = (session as any)?.user?.role as string | undefined
+  if (!session || !['ADMIN', 'EDITOR'].includes(role || '')) {
+    throw new Response('Unauthorized', { status: 401 })
+  }
+  const userId = (session as any)?.user?.id
+  return userId as string
+}
 
 /* ---------- util slug ---------- */
 const slugify = (raw: string): string =>
@@ -83,13 +98,15 @@ export async function GET(req: Request) {
   }
 }
 
-/* --- POST: create (dengan upsert kategori) --- */
+/* --- POST: create (dengan upsert kategori) + audit createdById/updatedById --- */
 export async function POST(req: Request) {
   try {
+    const actorId = await getActor()
+
     const form = await req.formData()
     const title = (form.get('title') as string) ?? ''
     const rawSlug = (form.get('slug') as string) ?? ''
-    const categorySlugInput = (form.get('categorySlug') as string) || '' // '' = tanpa kategori
+    const categorySlugInput = (form.get('categorySlug') as string) || ''
     const content = (form.get('content') as string) || ''
     const published = form.get('published') === 'on'
     const cover = (form.get('cover') as File) ?? null
@@ -99,13 +116,17 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Judul dan slug wajib diisi' }, { status: 400 })
     }
 
-    // upsert kategori bila ada input slug
     let categoryId: string | undefined
     if (categorySlugInput) {
       const cat = await prisma.category.upsert({
         where: { slug: categorySlugInput },
         update: {},
-        create: { slug: categorySlugInput, name: humanizeSlug(categorySlugInput) }
+        create: {
+          slug: categorySlugInput,
+          name: humanizeSlug(categorySlugInput),
+          createdById: actorId,
+          updatedById: actorId
+        }
       })
       categoryId = cat.id
     }
@@ -116,7 +137,16 @@ export async function POST(req: Request) {
     const { slug: firstSlug, adjusted: firstAdjusted } = await resolveUniqueSlug(rawSlug)
     const tryCreate = (useSlug: string) =>
       prisma.article.create({
-        data: { title, slug: useSlug, content, published, coverImageUrl, categoryId },
+        data: {
+          title,
+          slug: useSlug,
+          content,
+          published,
+          coverImageUrl,
+          categoryId,
+          createdById: actorId,
+          updatedById: actorId
+        },
         include: { category: true }
       })
 
@@ -145,25 +175,28 @@ export async function POST(req: Request) {
       }
       return NextResponse.json({ error: 'Gagal menyimpan artikel' }, { status: 500 })
     }
-  } catch {
+  } catch (e: any) {
+    if (e instanceof Response) return e
     return NextResponse.json({ error: 'Payload tidak valid' }, { status: 400 })
   }
 }
 
-/* ---------- PATCH: toggle publish ---------- */
+/* ---------- PATCH: toggle publish + audit updatedById ---------- */
 export async function PATCH(req: Request) {
   try {
+    const actorId = await getActor()
     const body = (await req.json()) as { id?: string; published?: boolean }
     if (!body?.id || typeof body.published !== 'boolean') {
       return NextResponse.json({ error: 'Payload tidak valid' }, { status: 400 })
     }
     const updated = await prisma.article.update({
       where: { id: body.id },
-      data: { published: body.published },
+      data: { published: body.published, updatedById: actorId },
       include: { category: true }
     })
     return NextResponse.json({ ...updated, _meta: { message: 'Status terbit diperbarui.' } })
   } catch (e: any) {
+    if (e instanceof Response) return e
     if (e?.code === 'P2025') {
       return NextResponse.json({ error: 'Artikel tidak ditemukan' }, { status: 404 })
     }
@@ -171,14 +204,16 @@ export async function PATCH(req: Request) {
   }
 }
 
-/* --- PUT: update (pertahankan cover lama; upsert kategori, kosongkan bila '') --- */
+/* --- PUT: update + audit updatedById (kategori di-upsert jika berubah) --- */
 export async function PUT(req: Request) {
   try {
+    const actorId = await getActor()
+
     const form = await req.formData()
     const id = (form.get('id') as string) ?? ''
     const title = (form.get('title') as string) ?? ''
     const rawSlug = (form.get('slug') as string) ?? ''
-    const categorySlugInput = form.get('categorySlug') as string // undefined = jangan diubah; '' = hapus kategori
+    const categorySlugInput = form.get('categorySlug') as string // undefined = jangan diubah; '' = hapus
     const content = (form.get('content') as string) || ''
     const publishedStr = form.get('published') as string | null
     const cover = (form.get('cover') as File) ?? null
@@ -190,7 +225,6 @@ export async function PUT(req: Request) {
     const existing = await prisma.article.findUnique({ where: { id } })
     if (!existing) return NextResponse.json({ error: 'Artikel tidak ditemukan' }, { status: 404 })
 
-    // hitung categoryId perubahan
     let nextCategoryField: { categoryId: string | null } | undefined = undefined
     if (categorySlugInput !== undefined) {
       if (categorySlugInput === '') {
@@ -199,7 +233,12 @@ export async function PUT(req: Request) {
         const cat = await prisma.category.upsert({
           where: { slug: categorySlugInput },
           update: {},
-          create: { slug: categorySlugInput, name: humanizeSlug(categorySlugInput) }
+          create: {
+            slug: categorySlugInput,
+            name: humanizeSlug(categorySlugInput),
+            createdById: actorId,
+            updatedById: actorId
+          }
         })
         nextCategoryField = { categoryId: cat.id }
       }
@@ -226,7 +265,8 @@ export async function PUT(req: Request) {
         content,
         ...(publishedStr !== null ? { published: publishedStr === 'on' } : {}),
         ...(nextCategoryField ?? {}),
-        ...(hasNewCover ? { coverImageUrl } : {})
+        ...(hasNewCover ? { coverImageUrl } : {}),
+        updatedById: actorId
       },
       include: { category: true }
     })
@@ -239,6 +279,7 @@ export async function PUT(req: Request) {
       }
     })
   } catch (e: any) {
+    if (e instanceof Response) return e
     if (e?.code === 'P2002' && e?.meta?.target?.includes('slug')) {
       return NextResponse.json({ error: 'Slug sudah digunakan' }, { status: 409 })
     }
@@ -246,9 +287,11 @@ export async function PUT(req: Request) {
   }
 }
 
-/* ---------- DELETE: hapus artikel + media Cloudinary ---------- */
+/* ---------- DELETE: hapus artikel + media Cloudinary (auth) ---------- */
 export async function DELETE(req: Request) {
   try {
+    await getActor()
+
     const body = (await req.json()) as { id?: string }
     if (!body?.id) return NextResponse.json({ error: 'ID wajib' }, { status: 400 })
 
@@ -267,7 +310,8 @@ export async function DELETE(req: Request) {
     await prisma.article.delete({ where: { id: body.id } })
 
     return NextResponse.json({ ok: true, _meta: { message: 'Artikel dihapus.' } })
-  } catch {
+  } catch (e: any) {
+    if (e instanceof Response) return e
     return NextResponse.json({ error: 'Gagal menghapus artikel' }, { status: 500 })
   }
 }

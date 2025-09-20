@@ -16,6 +16,36 @@ model User {
   role         Role     @default(USER)
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
+
+  categoriesCreated Category[] @relation("CategoryCreatedBy")
+  categoriesUpdated Category[] @relation("CategoryUpdatedBy")
+
+  articlesCreated Article[] @relation("ArticleCreatedBy")
+  articlesUpdated Article[] @relation("ArticleUpdatedBy")
+
+  employeesCreated Employee[] @relation("EmployeeCreatedBy")
+  employeesUpdated Employee[] @relation("EmployeeUpdatedBy")
+
+  officeProfilesCreated OfficeProfile[] @relation("OfficeProfileCreatedBy")
+  officeProfilesUpdated OfficeProfile[] @relation("OfficeProfileUpdatedBy")
+
+  faqsCreated Faq[] @relation("FaqCreatedBy")
+  faqsUpdated Faq[] @relation("FaqUpdatedBy")
+
+  jumbotronsCreated Jumbotron[] @relation("JumbotronCreatedBy")
+  jumbotronsUpdated Jumbotron[] @relation("JumbotronUpdatedBy")
+
+  videosCreated Video[] @relation("VideoCreatedBy")
+  videosUpdated Video[] @relation("VideoUpdatedBy")
+
+  teamsCreated Team[] @relation("TeamCreatedBy")
+  teamsUpdated Team[] @relation("TeamUpdatedBy")
+
+  bannersCreated Banner[] @relation("BannerCreatedBy")
+  bannersUpdated Banner[] @relation("BannerUpdatedBy")
+
+  linksCreated Link[] @relation("LinkCreatedBy")
+  linksUpdated Link[] @relation("LinkUpdatedBy")
 }
 
 model Category {
@@ -25,6 +55,14 @@ model Category {
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   articles  Article[]
+
+  createdById String @default("cmfjg9pz60000yxeecpdrl1k1")
+  updatedById String @default("cmfjg9pz60000yxeecpdrl1k1")
+  createdBy   User   @relation("CategoryCreatedBy", fields: [createdById], references: [id])
+  updatedBy   User   @relation("CategoryUpdatedBy", fields: [updatedById], references: [id])
+
+  @@index([createdById])
+  @@index([updatedById])
 }
 
 model Article {
@@ -39,6 +77,14 @@ model Article {
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
   category      Category? @relation(fields: [categoryId], references: [id])
+
+  createdById String @default("cmfjg9pz60000yxeecpdrl1k1")
+  updatedById String @default("cmfjg9pz60000yxeecpdrl1k1")
+  createdBy   User   @relation("ArticleCreatedBy", fields: [createdById], references: [id])
+  updatedBy   User   @relation("ArticleUpdatedBy", fields: [updatedById], references: [id])
+
+  @@index([createdById])
+  @@index([updatedById])
 }
 
 model Employee {
@@ -48,6 +94,14 @@ model Employee {
   photoUrl  String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  createdById String @default("cmfjg9pz60000yxeecpdrl1k1")
+  updatedById String @default("cmfjg9pz60000yxeecpdrl1k1")
+  createdBy   User   @relation("EmployeeCreatedBy", fields: [createdById], references: [id])
+  updatedBy   User   @relation("EmployeeUpdatedBy", fields: [updatedById], references: [id])
+
+  @@index([createdById])
+  @@index([updatedById])
 }
 
 model OfficeProfile {
@@ -60,6 +114,14 @@ model OfficeProfile {
   logoUrl     String?
   description String?
   updatedAt   DateTime @default(now()) @updatedAt
+
+  createdById String @default("cmfjg9pz60000yxeecpdrl1k1")
+  updatedById String @default("cmfjg9pz60000yxeecpdrl1k1")
+  createdBy   User   @relation("OfficeProfileCreatedBy", fields: [createdById], references: [id])
+  updatedBy   User   @relation("OfficeProfileUpdatedBy", fields: [updatedById], references: [id])
+
+  @@index([createdById])
+  @@index([updatedById])
 }
 
 model Faq {
@@ -68,6 +130,14 @@ model Faq {
   answer    String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  createdById String @default("cmfjg9pz60000yxeecpdrl1k1")
+  updatedById String @default("cmfjg9pz60000yxeecpdrl1k1")
+  createdBy   User   @relation("FaqCreatedBy", fields: [createdById], references: [id])
+  updatedBy   User   @relation("FaqUpdatedBy", fields: [updatedById], references: [id])
+
+  @@index([createdById])
+  @@index([updatedById])
 }
 
 model Jumbotron {
@@ -76,6 +146,14 @@ model Jumbotron {
   subtitle  String?
   imageUrl  String?
   updatedAt DateTime @default(now()) @updatedAt
+
+  createdById String @default("cmfjg9pz60000yxeecpdrl1k1")
+  updatedById String @default("cmfjg9pz60000yxeecpdrl1k1")
+  createdBy   User   @relation("JumbotronCreatedBy", fields: [createdById], references: [id])
+  updatedBy   User   @relation("JumbotronUpdatedBy", fields: [updatedById], references: [id])
+
+  @@index([createdById])
+  @@index([updatedById])
 }
 
 model Video {
@@ -86,6 +164,14 @@ model Video {
   description  String?
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
+
+  createdById String @default("cmfjg9pz60000yxeecpdrl1k1")
+  updatedById String @default("cmfjg9pz60000yxeecpdrl1k1")
+  createdBy   User   @relation("VideoCreatedBy", fields: [createdById], references: [id])
+  updatedBy   User   @relation("VideoUpdatedBy", fields: [updatedById], references: [id])
+
+  @@index([createdById])
+  @@index([updatedById])
 }
 
 model Team {
@@ -94,6 +180,14 @@ model Team {
   description String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+
+  createdById String @default("cmfjg9pz60000yxeecpdrl1k1")
+  updatedById String @default("cmfjg9pz60000yxeecpdrl1k1")
+  createdBy   User   @relation("TeamCreatedBy", fields: [createdById], references: [id])
+  updatedBy   User   @relation("TeamUpdatedBy", fields: [updatedById], references: [id])
+
+  @@index([createdById])
+  @@index([updatedById])
 }
 
 model Banner {
@@ -109,7 +203,14 @@ model Banner {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
+  createdById String @default("cmfjg9pz60000yxeecpdrl1k1")
+  updatedById String @default("cmfjg9pz60000yxeecpdrl1k1")
+  createdBy   User   @relation("BannerCreatedBy", fields: [createdById], references: [id])
+  updatedBy   User   @relation("BannerUpdatedBy", fields: [updatedById], references: [id])
+
   @@index([published, order, createdAt])
+  @@index([createdById])
+  @@index([updatedById])
 }
 
 model Link {
@@ -125,7 +226,14 @@ model Link {
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 
+  createdById String @default("cmfjg9pz60000yxeecpdrl1k1")
+  updatedById String @default("cmfjg9pz60000yxeecpdrl1k1")
+  createdBy   User   @relation("LinkCreatedBy", fields: [createdById], references: [id])
+  updatedBy   User   @relation("LinkUpdatedBy", fields: [updatedById], references: [id])
+
   @@index([order])
+  @@index([createdById])
+  @@index([updatedById])
 }
 
 enum Role {

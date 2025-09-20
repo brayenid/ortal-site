@@ -3,10 +3,24 @@ import { prisma } from '@/lib/prisma'
 import { maybeUploadFile } from '@/app/api/_helpers'
 import { v2 as cloudinary } from 'cloudinary'
 import imageSize from 'image-size'
+import { getServerSession } from 'next-auth'
+import { authConfig } from '@/lib/auth'
+
+export const runtime = 'nodejs'
+export const dynamic = 'force-dynamic'
+
+async function getActor() {
+  const session = await getServerSession(authConfig)
+  const role = (session as any)?.user?.role as string | undefined
+  if (!session || !['ADMIN', 'EDITOR'].includes(role || '')) {
+    throw new Response('Unauthorized', { status: 401 })
+  }
+  return (session as any)?.user?.id as string
+}
 
 /** VALIDASI RASIO */
-const TARGET_RATIO = 4 / 1 // 3:1 (horizontal memanjang)
-const TOLERANCE = 0.08 // +-8% toleransi
+const TARGET_RATIO = 4 / 1
+const TOLERANCE = 0.08
 const MIN_WIDTH = 1200
 const FOLDER_DEFAULT = process.env.CLOUDINARY_UPLOAD_FOLDER || 'office-site/banners'
 
@@ -56,9 +70,11 @@ export async function GET() {
   }
 }
 
-/** POST: create */
+/** POST: create (+ audit createdById/updatedById) */
 export async function POST(req: Request) {
   try {
+    const actorId = await getActor()
+
     const form = await req.formData()
     const title = (form.get('title') as string)?.trim()
     const description = ((form.get('description') as string) || '').trim()
@@ -72,7 +88,6 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Gambar banner wajib diunggah' }, { status: 400 })
     }
 
-    // validasi dimensi
     const buf = Buffer.from(await file.arrayBuffer())
     const dims = imageSize(buf as Uint8Array)
     if (!dims.width || !dims.height) {
@@ -86,10 +101,8 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: `Rasio harus ~3:1 (±8%). Rasio gambar: ${ratio}` }, { status: 400 })
     }
 
-    // upload
     const imageUrl = await maybeUploadFile(file, folder)
 
-    // optional link normalize
     const linkUrl =
       linkUrlRaw && /^(https?:)?\/\//i.test(linkUrlRaw)
         ? linkUrlRaw.startsWith('http')
@@ -103,21 +116,26 @@ export async function POST(req: Request) {
         description: description || undefined,
         linkUrl,
         imageUrl: imageUrl as string,
-        width: dims.width,
-        height: dims.height,
-        published
+        width: dims.width!,
+        height: dims.height!,
+        published,
+        createdById: actorId,
+        updatedById: actorId
       }
     })
 
-    return NextResponse.json({ ...created, _meta: { message: 'Banner ditambahkan.' } }, { status: 201 })
-  } catch (e) {
+    return NextResponse.json({ ...created, _meta: { message: 'Banner ditambahkan.' } } as any, { status: 201 })
+  } catch (e: any) {
+    if (e instanceof Response) return e
     return NextResponse.json({ error: 'Gagal menyimpan banner' }, { status: 500 })
   }
 }
 
-/** PUT: update */
+/** PUT: update (+ audit updatedById) */
 export async function PUT(req: Request) {
   try {
+    const actorId = await getActor()
+
     const form = await req.formData()
     const id = (form.get('id') as string | null) ?? ''
     if (!id) return NextResponse.json({ error: 'ID wajib' }, { status: 400 })
@@ -125,41 +143,30 @@ export async function PUT(req: Request) {
     const existing = await prisma.banner.findUnique({ where: { id } })
     if (!existing) return NextResponse.json({ error: 'Banner tidak ditemukan' }, { status: 404 })
 
-    // --- Title (wajib)
     const titleInput = (form.get('title') as string | null)?.trim() ?? ''
     if (!titleInput) return NextResponse.json({ error: 'Judul wajib diisi' }, { status: 400 })
     const title = titleInput
 
-    // --- Description: izinkan kosong => NULL
-    //    undefined = tidak ada field di form (tetap), null = set NULL, string = update
     const descInput = form.get('description') as string | null
-    const description =
-      descInput === null
-        ? undefined // tidak dikirim => biarkan nilai sebelumnya
-        : descInput.trim() === ''
-        ? null // dikirim tapi kosong => set NULL
-        : descInput.trim()
+    const description = descInput === null ? undefined : descInput.trim() === '' ? null : descInput.trim()
 
-    // --- Link: izinkan kosong => NULL, normalisasi skema (https) jika perlu
     const linkInput = form.get('linkUrl') as string | null
     let linkUrl: string | null | undefined
     if (linkInput === null) {
-      linkUrl = undefined // tidak dikirim => biarkan
+      linkUrl = undefined
     } else {
       const raw = linkInput.trim()
-      if (raw === '') linkUrl = null // kosong => set NULL
-      else if (raw.startsWith('/') || raw.startsWith('#')) linkUrl = raw // internal/hash
-      else if (/^https?:\/\//i.test(raw)) linkUrl = raw // sudah http/https
-      else if (/^\/\//.test(raw)) linkUrl = 'https:' + raw // protocol-relative
-      else linkUrl = 'https://' + raw // tambahkan https
+      if (raw === '') linkUrl = null
+      else if (raw.startsWith('/') || raw.startsWith('#')) linkUrl = raw
+      else if (/^https?:\/\//i.test(raw)) linkUrl = raw
+      else if (/^\/\//.test(raw)) linkUrl = 'https:' + raw
+      else linkUrl = 'https://' + raw
     }
 
-    // --- Published: jika field dikirim, update; kalau tidak, biarkan
     const publishedInput = form.get('published') as string | null
     const published =
       publishedInput === null ? undefined : ['on', 'true', '1', 'yes'].includes(publishedInput.toLowerCase())
 
-    // --- Gambar (opsional saat update)
     const file = form.get('image') as File | null
     const folder = ((form.get('folder') as string | null) ?? FOLDER_DEFAULT).trim() || FOLDER_DEFAULT
 
@@ -184,13 +191,10 @@ export async function PUT(req: Request) {
         return NextResponse.json({ error: `Rasio harus ~3:1 (±8%). Rasio gambar: ${ratio}` }, { status: 400 })
       }
 
-      // Hapus lama lalu upload baru
       if (existing.imageUrl) {
         try {
           await destroyCloudinaryByUrl(existing.imageUrl)
-        } catch {
-          // abaikan kegagalan hapus lama
-        }
+        } catch {}
       }
       imageUrl = await maybeUploadFile(file, folder)
       width = dims.width
@@ -201,43 +205,48 @@ export async function PUT(req: Request) {
       where: { id },
       data: {
         title,
-        ...(description === undefined ? {} : { description }), // bisa null
-        ...(linkUrl === undefined ? {} : { linkUrl }), // bisa null
+        ...(description === undefined ? {} : { description }),
+        ...(linkUrl === undefined ? {} : { linkUrl }),
         ...(published === undefined ? {} : { published }),
         ...(imageUrl ? { imageUrl } : {}),
         ...(width ? { width } : {}),
-        ...(height ? { height } : {})
+        ...(height ? { height } : {}),
+        updatedById: actorId
       }
     })
 
     return NextResponse.json({ ...updated, _meta: { message: 'Perubahan disimpan.' } })
-  } catch (e) {
-    console.error(e)
+  } catch (e: any) {
+    if (e instanceof Response) return e
     return NextResponse.json({ error: 'Gagal menyimpan perubahan' }, { status: 500 })
   }
 }
 
-/** PATCH: publish/order */
+/** PATCH: publish/order (+ audit updatedById) */
 export async function PATCH(req: Request) {
   try {
+    const actorId = await getActor()
     const body = (await req.json()) as { id?: string; published?: boolean; order?: number }
     if (!body?.id) return NextResponse.json({ error: 'ID wajib' }, { status: 400 })
     const updated = await prisma.banner.update({
       where: { id: body.id },
       data: {
         ...(typeof body.published === 'boolean' ? { published: body.published } : {}),
-        ...(typeof body.order === 'number' ? { order: body.order } : {})
+        ...(typeof body.order === 'number' ? { order: body.order } : {}),
+        updatedById: actorId
       }
     })
     return NextResponse.json({ ...updated, _meta: { message: 'Banner diperbarui.' } })
   } catch (e: any) {
+    if (e instanceof Response) return e
     return NextResponse.json({ error: 'Gagal memperbarui banner' }, { status: 500 })
   }
 }
 
-/** DELETE */
+/** DELETE (+ auth; audit not needed) */
 export async function DELETE(req: Request) {
   try {
+    await getActor()
     const body = (await req.json()) as { id?: string }
     if (!body?.id) return NextResponse.json({ error: 'ID wajib' }, { status: 400 })
 
@@ -252,7 +261,8 @@ export async function DELETE(req: Request) {
     await prisma.banner.delete({ where: { id: body.id } })
 
     return NextResponse.json({ ok: true, _meta: { message: 'Banner dihapus.' } })
-  } catch {
+  } catch (e: any) {
+    if (e instanceof Response) return e
     return NextResponse.json({ error: 'Gagal menghapus banner' }, { status: 500 })
   }
 }

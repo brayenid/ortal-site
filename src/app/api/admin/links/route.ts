@@ -8,12 +8,13 @@ import type { $Enums, IconKind } from '@prisma/client'
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 
-const assertCanManage = async () => {
+const assertCanManage = async (): Promise<string> => {
   const session = await getServerSession(authConfig)
   const role = (session as any)?.user?.role as string | undefined
   if (!session || !['ADMIN', 'EDITOR'].includes(role || '')) {
     throw new Response('Unauthorized', { status: 401 })
   }
+  return (session as any).user.id as string
 }
 
 /** GET /api/admin/links -> { ok: true, items: Link[] } */
@@ -34,7 +35,6 @@ export async function GET() {
       }
     })
 
-    // Pastikan nullability dan tipe konsisten dengan client
     const rows = items.map((x) => ({
       id: String(x.id),
       label: x.label ?? '',
@@ -56,7 +56,7 @@ export async function GET() {
 /** PUT /api/admin/links -> { ok: true, items: Link[] } */
 export async function PUT(req: NextRequest) {
   try {
-    await assertCanManage()
+    const actorId = await assertCanManage()
 
     const body = await req.json().catch(() => ({}))
     const parsed = linksArraySchema.safeParse(body?.items ?? body?.links ?? body)
@@ -65,13 +65,11 @@ export async function PUT(req: NextRequest) {
     }
     const input = parsed.data
 
-    // Ambil id-id lama untuk kebutuhan delete
     const existing = await prisma.link.findMany({ select: { id: true } })
     const existingIds = new Set(existing.map((x) => x.id))
     const incomingIds = new Set<string>(input.map((x) => String(x.id || '')))
 
     const result = await prisma.$transaction(async (tx) => {
-      // Upsert + set order sesuai index
       const upserted: {
         id: string
         label: string
@@ -83,9 +81,10 @@ export async function PUT(req: NextRequest) {
         iconName: string | null
         iconSvg: string | null
       }[] = []
+
       for (let i = 0; i < input.length; i++) {
         const v = input[i]
-        const data = {
+        const baseData = {
           label: v.label,
           url: v.url,
           newTab: v.newTab ?? true,
@@ -97,10 +96,11 @@ export async function PUT(req: NextRequest) {
         }
 
         if (v.id && existingIds.has(String(v.id))) {
+          // update
           upserted.push(
             await tx.link.update({
               where: { id: String(v.id) },
-              data,
+              data: { ...baseData, updatedById: actorId },
               select: {
                 id: true,
                 label: true,
@@ -115,9 +115,10 @@ export async function PUT(req: NextRequest) {
             })
           )
         } else {
+          // create
           upserted.push(
             await tx.link.create({
-              data,
+              data: { ...baseData, createdById: actorId, updatedById: actorId },
               select: {
                 id: true,
                 label: true,
@@ -134,13 +135,11 @@ export async function PUT(req: NextRequest) {
         }
       }
 
-      // Hapus record yang tidak ada di payload
       const toDelete = [...existingIds].filter((id) => id && !incomingIds.has(id))
       if (toDelete.length) {
         await tx.link.deleteMany({ where: { id: { in: toDelete } } })
       }
 
-      // Return terurut
       return upserted.sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
     })
 

@@ -1,4 +1,3 @@
-// src/app/api/admin/links/[id]/route.ts
 import { NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authConfig } from '@/lib/auth'
@@ -9,20 +8,21 @@ import type { IconKind } from '@prisma/client'
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 
-const assertCanManage = async () => {
+const assertCanManage = async (): Promise<string> => {
   const session = await getServerSession(authConfig)
   const role = (session as any)?.user?.role as string | undefined
   if (!session || !['ADMIN', 'EDITOR'].includes(role || '')) {
     throw new Response('Unauthorized', { status: 401 })
   }
+  return (session as any).user.id as string
 }
 
-export async function PATCH(req: Request, { params }: { params: Promise<{ id: string }> }) {
+export async function PATCH(req: Request, { params }: { params: { id: string } }) {
   try {
-    await assertCanManage()
-    const id = String((await params).id)
+    const actorId = await assertCanManage()
+    const id = String(params.id)
+
     const body = await req.json().catch(() => ({}))
-    // jika PATCH ingin parsial, gunakan .partial(); jika wajib lengkap, biarkan seperti ini
     const parsed = linkItemSchema.safeParse(body)
     if (!parsed.success) {
       return NextResponse.json({ error: parsed.error.flatten() }, { status: 400 })
@@ -39,7 +39,8 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
         ...(v.iconKind !== undefined ? { iconKind: (v.iconKind ?? null) as IconKind | null } : {}),
         ...(v.iconName !== undefined ? { iconName: v.iconName ?? null } : {}),
         ...(v.iconSvg !== undefined ? { iconSvg: v.iconSvg ?? null } : {}),
-        ...(v.description !== undefined ? { description: v.description ?? null } : {})
+        ...(v.description !== undefined ? { description: v.description ?? null } : {}),
+        updatedById: actorId
       },
       select: {
         id: true,
@@ -61,10 +62,10 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
   }
 }
 
-export async function DELETE(req: Request, { params }: { params: Promise<{ id: string }> }) {
+export async function DELETE(_: Request, { params }: { params: { id: string } }) {
   try {
     await assertCanManage()
-    await prisma.link.delete({ where: { id: String((await params).id) } })
+    await prisma.link.delete({ where: { id: String(params.id) } })
     return NextResponse.json({ ok: true })
   } catch (e: any) {
     if (e instanceof Response) return e
