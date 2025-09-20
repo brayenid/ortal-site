@@ -17,10 +17,10 @@ const assertCanManage = async (): Promise<string> => {
   return (session as any).user.id as string
 }
 
-export async function PATCH(req: Request, { params }: { params: { id: string } }) {
+export async function PATCH(req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
     const actorId = await assertCanManage()
-    const id = String(params.id)
+    const id = String((await params).id)
 
     const body = await req.json().catch(() => ({}))
     const parsed = linkItemSchema.safeParse(body)
@@ -62,10 +62,10 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
   }
 }
 
-export async function DELETE(_: Request, { params }: { params: { id: string } }) {
+export async function DELETE(_: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
     await assertCanManage()
-    await prisma.link.delete({ where: { id: String(params.id) } })
+    await prisma.link.delete({ where: { id: String((await params).id) } })
     return NextResponse.json({ ok: true })
   } catch (e: any) {
     if (e instanceof Response) return e
