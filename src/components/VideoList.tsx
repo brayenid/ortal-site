@@ -111,7 +111,7 @@ export async function VideoList({
                 className="card hover:shadow-md transition-shadow block">
                 {thumb ? (
                   <div className="relative aspect-video mb-3">
-                    <Image src={thumb} alt={v.title} fill className="rounded-xl object-cover" />
+                    <Image unoptimized src={thumb} alt={v.title} fill className="rounded-xl object-cover" />
                   </div>
                 ) : null}
                 <h3 className="text-sm sm:text-base font-semibold line-clamp-2">{v.title}</h3>
