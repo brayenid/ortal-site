@@ -11,6 +11,8 @@ import { TawkWidget } from '@/components/TawkWidget'
 import SocialLinks from '@/components/SocialLinks'
 import SkipToArticles from '@/components/SkipToArticles'
 
+export const revalidate = 300
+
 const poppins = Poppins({
   subsets: ['latin'],
   weight: ['300', '400', '500', '600', '700', '800', '900']

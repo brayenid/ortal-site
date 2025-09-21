@@ -14,6 +14,7 @@ export function ArticleCard({ article }: { article: any }) {
               alt={article.title}
               fill
               className="rounded-xl object-cover"
+              unoptimized
             />
           </div>
         )}

@@ -3,7 +3,7 @@ import type { Metadata } from 'next'
 import Image from 'next/image'
 import { prisma } from '@/lib/prisma'
 
-export const dynamic = 'force-dynamic'
+export const revalidate = 300
 
 const BASE_URL = process.env.NEXT_PUBLIC_APP_URL || process.env.NEXTAUTH_URL || 'http://localhost:3000'
 const PAGE_PATH = '/profil'

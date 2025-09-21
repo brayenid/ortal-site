@@ -8,8 +8,8 @@ import Link from 'next/link'
 import BookmarkButton from '@/components/BookmarkButton'
 import DisqusThread from '@/components/Disqus'
 
-export const dynamic = 'force-dynamic'
 export const runtime = 'nodejs'
+export const revalidate = 300 // 5 menit
 
 type PageParams = { params: Promise<{ slug: string }> }
 
@@ -150,6 +150,7 @@ export default async function ArtikelDetailPage({ params }: PageParams) {
                 className="rounded-xl object-cover"
                 sizes="(min-width: 768px) 66vw, 100vw"
                 priority
+                unoptimized
               />
             </div>
           )}
