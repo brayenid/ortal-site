@@ -36,7 +36,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
               <SocialLinks scheme="light" size="md" />
             </div>
             <p>
-              © {new Date().getFullYear()} Bagian Organisasi Kutai Barat. <br />
+              © {new Date().getFullYear()} Bagian Organisasi Kutai Barat - <br />
               Dikembangkan Oleh Tim Bagian Organisasi
             </p>
           </div>
