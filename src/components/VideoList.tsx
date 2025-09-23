@@ -82,9 +82,9 @@ export async function VideoList({
   })) as VideoLite[]
 
   return (
-    <section className={`container py-10 ${className}`}>
+    <section className={`container mb-14 ${className}`}>
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-lg sm:text-xl font-bold !m-0">{title}</h2>
+        <h2 className="text-lg sm:text-xl !m-0">{title}</h2>
         {showViewAll ? (
           <Link target="_blank" href={viewAllHref} className="text-sm text-primary hover:underline">
             Lihat semua

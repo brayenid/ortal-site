@@ -60,7 +60,7 @@ export async function TeamChips({
                   {initial(t.name)}
                 </span>
                 <div className="min-w-0">
-                  <div className="truncate text-sm font-semibold text-slate-800 group-hover:text-slate-900">
+                  <div className="text-sm sm:text-base truncate font-semibold text-slate-800 group-hover:text-slate-900">
                     {t.name}
                   </div>
                 </div>

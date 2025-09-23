@@ -138,7 +138,7 @@ export default function ClientBannerCarousel({ banners }: { banners: BannerLite[
     : { transform: `translateX(-${idx * 100}%)` }
 
   return (
-    <section className="relative container py-6">
+    <section className="relative container my-14">
       <div
         ref={wrapperRef}
         className="relative overflow-hidden rounded-xl select-none"

@@ -27,7 +27,7 @@ export default function SkmCta({
   external = false
 }: Props) {
   return (
-    <section className={`container my-10 ${className}`}>
+    <section className={`container mb-14 ${className}`}>
       <div className="relative overflow-hidden rounded-2xl bg-primary text-white shadow-lg">
         {/* Dekorasi halus */}
         <div className="pointer-events-none absolute -left-24 -top-24 h-72 w-72 rounded-full bg-white/15 blur-2xl" />

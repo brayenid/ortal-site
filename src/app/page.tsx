@@ -93,30 +93,22 @@ export default function HomePage() {
   return (
     <div>
       <Jumbotron />
-
       <BannerCarousel />
-      <LinksShowcase variant="card" color="primary" size="md" iconPosition="left" columns={3} />
-
-      <TeamChips className="mb-8 container" />
-
+      <LinksShowcase variant="card" color="primary" descLines="full" size="lg" iconPosition="left" columns={2} />
+      <TeamChips className="mb-14 container" />
       <div id="main" tabIndex={-1} aria-label="Daftar artikel">
         <ArticleList title="Artikel Terbaru" />
       </div>
-
       <VideoList
         title="Video Terbaru"
         limit={6}
         showViewAll
         viewAllHref="https://www.youtube.com/@bagianorganisasikutaibarat3988"
       />
-
       <FAQ />
       <SkmCta
-        href="https://docs.google.com/forms/d/e/1FAIpQLSdbdigLhYffuN8tmyleUKNimLpsB03keka6Eag9Dqk31Hoomw/viewform?usp=sharing&ouid=111692972392715404214" // ganti dengan URL SKM kamu
-        external // buka tab baru jika eksternal
-        // title="Judul kustom kalau mau"
-        // description="Deskripsi kustom kalau mau"
-        // buttonText="Isi Survei"
+        href="https://docs.google.com/forms/d/e/1FAIpQLSdbdigLhYffuN8tmyleUKNimLpsB03keka6Eag9Dqk31Hoomw/viewform?usp=sharing&ouid=111692972392715404214"
+        external
       />
     </div>
   )

@@ -67,8 +67,7 @@ const IconView = ({ item, sizePx = 18 }: { item: LinkItem; sizePx?: number }) =>
   if (item.iconKind === 'SVG' && item.iconSvg) {
     return (
       <span
-        className="inline-block"
-        style={{ width: sizePx, height: sizePx }}
+        className="inline-block p-3 rounded-full bg-red-50 text-rose-600"
         dangerouslySetInnerHTML={{ __html: sanitizeSVG(item.iconSvg) }}
       />
     )
@@ -116,7 +115,14 @@ const sizeSpec = (size: Size) => {
     case 'sm':
       return { padX: 'px-3', padY: 'py-2', gap: 'gap-2', text: 'text-sm', icon: 16, desc: 'text-xs' }
     case 'lg':
-      return { padX: 'px-5', padY: 'py-3', gap: 'gap-3', text: 'text-base', icon: 22, desc: 'text-sm' }
+      return {
+        padX: 'px-4',
+        padY: 'py-2',
+        gap: 'gap-3',
+        text: 'text-sm sm:text-base',
+        icon: 22,
+        desc: 'text-xs sm:text-sm'
+      }
     default:
       return { padX: 'px-4', padY: 'py-2.5', gap: 'gap-2', text: 'text-sm', icon: 18, desc: 'text-xs' }
   }
@@ -263,41 +269,44 @@ export default async function LinksShowcase({
       : 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'
 
   return (
-    <div className={clsx('grid gap-3 container', gridCols, className)}>
-      {data.map((it) => {
-        const target = it.newTab ? '_blank' : undefined
-        const rel = it.newTab ? relExternal : undefined
-        return (
-          <a
-            key={it.id}
-            href={it.url}
-            target={target}
-            rel={rel}
-            className={clsx(
-              'group rounded-xl border bg-white transition hover:translate-y-[-1px] hover:shadow-md',
-              pal.border
-            )}
-            title={it.description || undefined}>
-            <div
+    <div className="container mb-14">
+      <h2 className="text-lg sm:text-xl !p-0 !mt-0 mb-4">Daftar Tautan</h2>
+      <div className={clsx('grid gap-3', gridCols, className)}>
+        {data.map((it) => {
+          const target = it.newTab ? '_blank' : undefined
+          const rel = it.newTab ? relExternal : undefined
+          return (
+            <a
+              key={it.id}
+              href={it.url}
+              target={target}
+              rel={rel}
               className={clsx(
-                'flex',
-                iconPosition === 'top' ? 'flex-col items-start' : 'items-center',
-                sz.padX,
-                sz.padY,
-                sz.gap
-              )}>
-              {iconPosition !== 'right' && <IconView item={it} sizePx={sz.icon + 4} />}
-              <div className="min-w-0 p-2">
-                <div className={clsx('font-semibold', pal.text, sz.text, 'truncate')}>{it.label}</div>
-                {it.description ? (
-                  <div className={clsx('text-slate-500', sz.desc, 'max-w-[32rem]', descCls)}>{it.description}</div>
-                ) : null}
+                'group rounded-xl border bg-white transition hover:translate-y-[-1px] hover:shadow-md',
+                pal.border
+              )}
+              title={it.description || undefined}>
+              <div
+                className={clsx(
+                  'flex',
+                  iconPosition === 'top' ? 'flex-col items-start' : 'items-center',
+                  sz.padX,
+                  sz.padY,
+                  sz.gap
+                )}>
+                {iconPosition !== 'right' && <IconView item={it} sizePx={sz.icon + 4} />}
+                <div className="min-w-0 p-2">
+                  <div className={clsx('font-semibold', pal.text, sz.text, 'truncate mb-2')}>{it.label}</div>
+                  {it.description ? (
+                    <div className={clsx('text-slate-500', sz.desc, 'max-w-[32rem]', descCls)}>{it.description}</div>
+                  ) : null}
+                </div>
+                {iconPosition === 'right' && <IconView item={it} sizePx={sz.icon + 4} />}
               </div>
-              {iconPosition === 'right' && <IconView item={it} sizePx={sz.icon + 4} />}
-            </div>
-          </a>
-        )
-      })}
+            </a>
+          )
+        })}
+      </div>
     </div>
   )
 }

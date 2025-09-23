@@ -32,7 +32,7 @@ export async function FAQ() {
               </svg>
               FAQ
             </div>
-            <h2 className="text-lg sm:text-xl font-semibold mb-4">Pertanyaan Yang Sering Diajukan</h2>
+            <h2 className="text-lg sm:text-xl mb-4">Pertanyaan Yang Sering Diajukan</h2>
             <p className="mt-1 text-slate-600">Temukan jawaban cepat.</p>
           </div>
         </div>
