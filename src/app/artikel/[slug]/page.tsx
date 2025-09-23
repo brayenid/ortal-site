@@ -13,7 +13,7 @@ export const revalidate = 300 // 5 menit
 
 type PageParams = { params: Promise<{ slug: string }> }
 
-const BASE_URL = process.env.NEXT_PUBLIC_APP_URL || process.env.NEXTAUTH_URL || 'http://localhost:3000'
+const BASE_URL = process.env.NEXT_PUBLIC_APP_URL || process.env.NEXTAUTH_URL || 'http://localhost:4000'
 
 const stripHtml = (html: string) =>
   (html || '')
@@ -106,6 +106,10 @@ export default async function ArtikelDetailPage({ params }: PageParams) {
       take: 5
     })
   }
+
+  console.log('====================================')
+  console.log(BASE_URL)
+  console.log('====================================')
 
   const canonical = new URL(`/artikel/${article.slug}`, BASE_URL).toString()
   const dateStr = new Date(article.createdAt).toLocaleDateString('id-ID', { dateStyle: 'long' })
