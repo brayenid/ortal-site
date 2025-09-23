@@ -118,7 +118,7 @@ export default function AdminCommentsPage() {
           <table className="min-w-full text-sm">
             <thead>
               <tr className="bg-slate-50 text-slate-700">
-                <th className="px-3 py-2 text-left w-[36%]">Komentar</th>
+                <th className="px-3 py-2 text-left">Komentar</th>
                 <th className="px-3 py-2 text-left w-[28%]">Thread</th>
                 <th className="px-3 py-2 text-left w-[22%]">Penulis</th>
                 <th className="px-3 py-2 text-left w-[14%]">Waktu</th>
@@ -156,7 +156,7 @@ export default function AdminCommentsPage() {
                   return (
                     <tr key={c.id} className="border-t border-slate-200 align-top">
                       <td className="px-3 py-2">
-                        <div className="text-slate-800">
+                        <div className="text-slate-800 text-xs sm:text-sm">
                           {msg}
                           {msg.length >= 220 ? '…' : ''}
                         </div>
@@ -176,7 +176,7 @@ export default function AdminCommentsPage() {
                             href={threadLink}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-secondary hover:underline">
+                            className="text-secondary hover:underline text-xs sm:text-sm">
                             {threadTitle}
                           </a>
                         ) : (
@@ -185,13 +185,12 @@ export default function AdminCommentsPage() {
                       </td>
                       <td className="px-3 py-2">
                         <div className="flex items-center gap-2">
-                          <img src={avatar} alt="" className="h-6 w-6 rounded-full border border-slate-200" />
                           {c.author?.profileUrl ? (
                             <a
                               href={c.author.profileUrl}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="hover:underline">
+                              className="hover:underline text-xs sm:text-sm">
                               {name}
                             </a>
                           ) : (
@@ -199,7 +198,7 @@ export default function AdminCommentsPage() {
                           )}
                         </div>
                       </td>
-                      <td className="px-3 py-2 whitespace-nowrap">{fmtTime(c.createdAt)}</td>
+                      <td className="px-3 py-2 whitespace-nowrap text-xs sm:text-sm">{fmtTime(c.createdAt)}</td>
                     </tr>
                   )
                 })

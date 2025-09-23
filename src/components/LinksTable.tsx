@@ -177,7 +177,7 @@ export const LinksTable = ({ value, onChange, nameForForm = 'links' }: Props): J
                   </td>
 
                   {/* Teks */}
-                  <td className="px-3 py-2">
+                  <td className="px-3 py-2 min-w-32">
                     <input
                       value={row.label ?? ''}
                       onChange={(e) => setAt(idx, { label: e.target.value })}
@@ -187,7 +187,7 @@ export const LinksTable = ({ value, onChange, nameForForm = 'links' }: Props): J
                   </td>
 
                   {/* URL */}
-                  <td className="px-3 py-2">
+                  <td className="px-3 py-2 min-w-36">
                     <input
                       value={row.url ?? ''}
                       onChange={(e) => setAt(idx, { url: e.target.value })}
@@ -198,7 +198,7 @@ export const LinksTable = ({ value, onChange, nameForForm = 'links' }: Props): J
                   </td>
 
                   {/* Deskripsi */}
-                  <td className="px-3 py-2">
+                  <td className="px-3 py-2 min-w-40">
                     <textarea
                       value={row.description ?? ''}
                       onChange={(e) => setAt(idx, { description: e.target.value || null })}
