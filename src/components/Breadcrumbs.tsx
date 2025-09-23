@@ -41,7 +41,6 @@ export default function Breadcrumbs({ items, maxItemWidth = 96 }: { items: Crumb
                     {it.name}
                   </Link>
                 ) : (
-                  // crumb terakhir: ambil sisa ruang + truncate
                   <span className="block min-w-0 max-w-full truncate text-slate-900 font-medium" title={it.name}>
                     {it.name}
                   </span>
