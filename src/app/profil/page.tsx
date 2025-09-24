@@ -2,6 +2,7 @@
 import type { Metadata } from 'next'
 import Image from 'next/image'
 import { prisma } from '@/lib/prisma'
+import { TeamChips } from '@/components/Team'
 
 export const revalidate = 300
 
@@ -245,6 +246,7 @@ export default async function ProfilPage() {
                 <div className="text-slate-600">Belum ada deskripsi.</div>
               )}
             </div>
+            <TeamChips columns={1} />
           </section>
         </div>
       </div>
