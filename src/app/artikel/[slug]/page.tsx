@@ -7,6 +7,7 @@ import Breadcrumbs, { type Crumb } from '@/components/Breadcrumbs'
 import Link from 'next/link'
 import BookmarkButton from '@/components/BookmarkButton'
 import DisqusThread from '@/components/Disqus'
+import { Pen, PencilRulerIcon, User } from 'lucide-react'
 
 export const runtime = 'nodejs'
 export const revalidate = 300 // 5 menit
@@ -24,13 +25,17 @@ const stripHtml = (html: string) =>
 async function getArticle(slug: string) {
   return prisma.article.findUnique({
     where: { slug },
-    include: { category: true }
+    include: { category: true, updatedBy: true, createdBy: true }
   })
+}
+
+const checkCreatedBy = (createdBy: string, publishedBy: string): boolean => {
+  return createdBy === publishedBy
 }
 
 export async function generateMetadata({ params }: PageParams): Promise<Metadata> {
   try {
-    const { slug } = await params // ⬅️ penting
+    const { slug } = await params
     const article = await prisma.article.findUnique({
       where: { slug },
       select: {
@@ -83,7 +88,7 @@ export async function generateMetadata({ params }: PageParams): Promise<Metadata
 }
 
 export default async function ArtikelDetailPage({ params }: PageParams) {
-  const { slug } = await params // ⬅️ penting
+  const { slug } = await params
   const article = await getArticle(slug)
   if (!article || !article.published) return notFound()
 
@@ -134,7 +139,36 @@ export default async function ArtikelDetailPage({ params }: PageParams) {
             )}
 
             <p className="text-sm text-slate-500">{dateStr}</p>
-            {/* ⬇️ Tombol Bookmark */}
+            {checkCreatedBy(article.updatedBy.id, article.createdBy.id) ? (
+              <div className="text-sm text-slate-500 flex items-center gap-2 ">
+                <User size={14} />
+                <span
+                  className="hover:underline decoration-dotted cursor-help"
+                  title={`Dibuat oleh ${article.createdBy.name}`}>
+                  {article.createdBy.name}
+                </span>
+              </div>
+            ) : (
+              <div className="flex items-center gap-4 flex-wrap">
+                <div className="text-sm text-slate-500 flex items-center gap-2 ">
+                  <User size={14} />
+                  <span
+                    className="hover:underline decoration-dotted cursor-help"
+                    title={`Dibuat oleh ${article.createdBy.name}`}>
+                    {article.createdBy.name}
+                  </span>
+                </div>
+                <div className="text-sm text-slate-500 flex items-center gap-2 ">
+                  <Pen size={14} />
+                  <span
+                    className="hover:underline decoration-dotted cursor-help"
+                    title={`Diperbaharui oleh ${article.updatedBy.name}`}>
+                    {article.updatedBy.name}
+                  </span>
+                </div>
+              </div>
+            )}
+            {/*  Tombol Bookmark */}
             <div className="ml-auto flex justify-end">
               <BookmarkButton slug={article.slug} />
             </div>

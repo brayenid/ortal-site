@@ -83,29 +83,29 @@ export default function AdminCommentsPage() {
 
   return (
     <div className="container py-10">
+      <div className="flex justify-end mb-4">
+        <Link href="/admin" className="text-sm text-secondary">
+          ← Kembali
+        </Link>
+      </div>
       <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
         <h1 className="text-lg font-semibold tracking-tight text-slate-800">Komentar Disqus (Terbaru)</h1>
-        <div className="flex items-center gap-3">
-          <div className="flex items-center gap-2">
-            <label htmlFor="limit" className="text-sm text-slate-600">
-              Limit
-            </label>
-            <select
-              id="limit"
-              value={limit}
-              onChange={(e) => setLimit(Number(e.target.value) as Limit)}
-              className="rounded-xl border border-slate-300 bg-white pr-8 py-1.5 text-sm"
-              aria-label="Batas komentar per permintaan">
-              {LIMIT_OPTIONS.map((opt) => (
-                <option key={opt} value={opt}>
-                  {opt}
-                </option>
-              ))}
-            </select>
-          </div>
-          <Link href="/admin" className="text-sm text-secondary">
-            ← Kembali
-          </Link>
+        <div className="flex items-center gap-2">
+          <label htmlFor="limit" className="text-sm text-slate-600">
+            Limit
+          </label>
+          <select
+            id="limit"
+            value={limit}
+            onChange={(e) => setLimit(Number(e.target.value) as Limit)}
+            className="rounded-xl border border-slate-300 bg-white pr-8 py-1.5 text-sm"
+            aria-label="Batas komentar per permintaan">
+            {LIMIT_OPTIONS.map((opt) => (
+              <option key={opt} value={opt}>
+                {opt}
+              </option>
+            ))}
+          </select>
         </div>
       </div>
 

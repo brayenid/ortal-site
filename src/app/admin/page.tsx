@@ -126,12 +126,12 @@ export default async function AdminHome() {
 
   return (
     <div className="container py-10">
-      <div className="mb-6 flex items-center justify-between">
+      <div className="mb-6 flex sm:items-center gap-4 sm:justify-between flex-col sm:flex-row">
         <div>
           <h1 className="text-2xl font-bold">Dashboard Admin</h1>
           <p className="text-sm text-slate-600">Kelola konten situs dengan cepat dan konsisten.</p>
         </div>
-        <span className="hidden sm:inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs text-slate-700">
+        <span className="items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs text-slate-700 w-min">
           {session.user.email}
         </span>
       </div>
