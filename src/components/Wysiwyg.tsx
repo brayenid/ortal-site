@@ -886,194 +886,184 @@ export const SimpleWysiwyg = ({
 
   /* ============ RENDER ============ */
   return (
-    <div className="space-y-2">
+    <div className="space-y-2 w-full">
       <div ref={sentinelRef} aria-hidden className="h-px -mt-px" />
 
       {/* Toolbar scrollable */}
+
       <div
         className={[
-          'flex flex-wrap items-center gap-2 sticky z-[100] w-full overflow-x-scroll transition-all bg-white p-2 rounded',
+          'flex flex-wrap items-center gap-2 sticky z-[100] transition-all bg-white p-2 rounded',
           stuck ? 'shadow-sm border border-gray-200' : 'border border-transparent'
         ].join(' ')}
-        style={{ top: stickyOffset }}
-        role="toolbar"
-        aria-label="Editor toolbar">
-        <div
-          className={[
-            'flex items-center gap-2 min-w-max sticky z-[100] transition-all bg-white p-2 rounded',
-            stuck ? 'shadow-sm border border-gray-200' : 'border border-transparent'
-          ].join(' ')}
-          style={{ top: stickyOffset }}
-          role="toolbar"
-          aria-label="Editor toolbar">
-          {/* Block format */}
-          <select
-            value={block}
-            onChange={(e) => setFormatBlock(e.target.value as BlockTag)}
-            className="rounded-lg border border-slate-300 bg-white px-2 py-1 text-sm w-32"
-            aria-label="Ubah format blok">
-            <option value="P">Normal</option>
-            <option value="H1">H1</option>
-            <option value="H2">H2</option>
-            <option value="H3">H3</option>
-            <option value="BLOCKQUOTE">Quote</option>
-          </select>
+        style={{ top: stickyOffset }}>
+        {/* Block format */}
+        <select
+          value={block}
+          onChange={(e) => setFormatBlock(e.target.value as BlockTag)}
+          className="rounded-lg border border-slate-300 bg-white px-2 py-1 text-sm w-24"
+          aria-label="Ubah format blok">
+          <option value="P">Normal</option>
+          <option value="H1">H1</option>
+          <option value="H2">H2</option>
+          <option value="H3">H3</option>
+          <option value="BLOCKQUOTE">Quote</option>
+        </select>
 
-          {sectionSep}
+        {sectionSep}
 
-          {/* Inline */}
-          <button type="button" className={btn(false)} onClick={() => exec('bold')} aria-label="Bold">
-            <Bold size={16} />
-          </button>
-          <button type="button" className={btn(false)} onClick={() => exec('italic')} aria-label="Italic">
-            <Italic size={16} />
-          </button>
-          <button type="button" className={btn(false)} onClick={() => exec('underline')} aria-label="Underline">
-            <Underline size={16} />
-          </button>
+        {/* Inline */}
+        <button type="button" className={btn(false)} onClick={() => exec('bold')} aria-label="Bold">
+          <Bold size={16} />
+        </button>
+        <button type="button" className={btn(false)} onClick={() => exec('italic')} aria-label="Italic">
+          <Italic size={16} />
+        </button>
+        <button type="button" className={btn(false)} onClick={() => exec('underline')} aria-label="Underline">
+          <Underline size={16} />
+        </button>
 
-          {sectionSep}
+        {sectionSep}
 
-          {/* Lists (apply ke teks terseleksi dalam sel) */}
-          <select
-            defaultValue=""
-            onChange={(e) => {
-              const v = e.target.value
-              if (!v) return
-              if (v === 'ul') applyListWithinCell('ul')
-              if (v === 'ol') applyListWithinCell('ol')
-              e.currentTarget.value = ''
-            }}
-            className="rounded-lg border border-slate-300 bg-white px-2 py-1 text-sm w-32"
-            title="Lists">
-            <option value="" disabled>
-              Lists…
-            </option>
-            <option value="ul">• Bulleted</option>
-            <option value="ol">1. Numbered</option>
-          </select>
+        {/* Lists (apply ke teks terseleksi dalam sel) */}
+        <select
+          defaultValue=""
+          onChange={(e) => {
+            const v = e.target.value
+            if (!v) return
+            if (v === 'ul') applyListWithinCell('ul')
+            if (v === 'ol') applyListWithinCell('ol')
+            e.currentTarget.value = ''
+          }}
+          className="rounded-lg border border-slate-300 bg-white px-2 py-1 text-sm w-20"
+          title="Lists">
+          <option value="" disabled>
+            List
+          </option>
+          <option value="ul">• UL</option>
+          <option value="ol">1. OL</option>
+        </select>
 
-          {/* Link & Quote */}
-          <button type="button" className={btn(false)} onClick={createLink} aria-label="Insert link">
-            <LinkIcon size={16} />
-          </button>
-          <button
-            type="button"
-            className={btn(block === 'BLOCKQUOTE')}
-            onClick={() => setFormatBlock('BLOCKQUOTE')}
-            aria-label="Quote">
-            <Quote size={16} />
-          </button>
+        {/* Link & Quote */}
+        <button type="button" className={btn(false)} onClick={createLink} aria-label="Insert link">
+          <LinkIcon size={16} />
+        </button>
+        <button
+          type="button"
+          className={btn(block === 'BLOCKQUOTE')}
+          onClick={() => setFormatBlock('BLOCKQUOTE')}
+          aria-label="Quote">
+          <Quote size={16} />
+        </button>
 
-          {sectionSep}
+        {sectionSep}
 
-          {/* Alignment */}
-          <select
-            value={align}
-            onChange={(e) => setAlignment(e.target.value as Align)}
-            className="rounded-lg border border-slate-300 bg-white px-2 py-1 text-sm w-32"
-            title="Alignment">
-            <option value="left">Align Left</option>
-            <option value="center">Align Center</option>
-            <option value="right">Align Right</option>
-            <option value="justify">Justify</option>
-          </select>
+        {/* Alignment */}
+        <select
+          value={align}
+          onChange={(e) => setAlignment(e.target.value as Align)}
+          className="rounded-lg border border-slate-300 bg-white px-2 py-1 text-sm w-32"
+          title="Alignment">
+          <option value="left">Align Left</option>
+          <option value="center">Align Center</option>
+          <option value="right">Align Right</option>
+          <option value="justify">Justify</option>
+        </select>
 
-          {/* Image size */}
-          <select
-            value={imgSize}
-            onChange={(e) => setFigureSize(parseInt(e.target.value, 10) as SizePct)}
-            className="rounded-lg border border-slate-300 bg-white px-2 py-1 text-sm w-24"
-            title="Ukuran gambar (persen)">
-            <option value={10}>10%</option>
-            <option value={25}>25%</option>
-            <option value={50}>50%</option>
-            <option value={75}>75%</option>
-            <option value={100}>100%</option>
-          </select>
+        {/* Image size */}
+        <select
+          value={imgSize}
+          onChange={(e) => setFigureSize(parseInt(e.target.value, 10) as SizePct)}
+          className="rounded-lg border border-slate-300 bg-white px-2 py-1 text-sm w-20"
+          title="Ukuran gambar (persen)">
+          <option value={10}>10%</option>
+          <option value={25}>25%</option>
+          <option value={50}>50%</option>
+          <option value={75}>75%</option>
+          <option value={100}>100%</option>
+        </select>
 
-          {sectionSep}
+        {sectionSep}
 
-          {/* Warning */}
-          <button type="button" className={btn(false)} onClick={toggleWarning} aria-label="Warning block">
-            <AlertTriangle size={16} />
-          </button>
+        {/* Warning */}
+        <button type="button" className={btn(false)} onClick={toggleWarning} aria-label="Warning block">
+          <AlertTriangle size={16} />
+        </button>
 
-          {sectionSep}
+        {sectionSep}
 
-          {/* Table tools */}
-          <select
-            defaultValue=""
-            onChange={(e) => {
-              const v = e.target.value
-              if (!v) return
-              if (v === 'insert') insertTable()
-              if (v === 'row-above') addRowAbove()
-              if (v === 'row-below') addRowBelow()
-              if (v === 'row-del') deleteRow()
-              if (v === 'col-left') modifyColumn('left')
-              if (v === 'col-right') modifyColumn('right')
-              if (v === 'col-del') modifyColumn('delete')
-              if (v === 'del-table') deleteTable()
-              e.currentTarget.value = ''
-            }}
-            className="rounded-lg border border-slate-300 bg-white px-2 py-1 text-sm w-44"
-            title="Table tools">
-            <option value="" disabled>
-              Table…
-            </option>
-            <option value="insert">➕ Insert Table</option>
-            <optgroup label="Rows">
-              <option value="row-above">+ Row Above</option>
-              <option value="row-below">+ Row Below</option>
-              <option value="row-del">− Delete Row</option>
-            </optgroup>
-            <optgroup label="Columns">
-              <option value="col-left">+ Col Left</option>
-              <option value="col-right">+ Col Right</option>
-              <option value="col-del">− Delete Col</option>
-            </optgroup>
-            <optgroup label="Danger">
-              <option value="del-table">🗑 Delete Table</option>
-            </optgroup>
-          </select>
+        {/* Table tools */}
+        <select
+          defaultValue=""
+          onChange={(e) => {
+            const v = e.target.value
+            if (!v) return
+            if (v === 'insert') insertTable()
+            if (v === 'row-above') addRowAbove()
+            if (v === 'row-below') addRowBelow()
+            if (v === 'row-del') deleteRow()
+            if (v === 'col-left') modifyColumn('left')
+            if (v === 'col-right') modifyColumn('right')
+            if (v === 'col-del') modifyColumn('delete')
+            if (v === 'del-table') deleteTable()
+            e.currentTarget.value = ''
+          }}
+          className="rounded-lg border border-slate-300 bg-white px-2 py-1 text-sm w-32"
+          title="Table tools">
+          <option value="" disabled>
+            Table
+          </option>
+          <option value="insert">➕ Insert Table</option>
+          <optgroup label="Rows">
+            <option value="row-above">+ Row Above</option>
+            <option value="row-below">+ Row Below</option>
+            <option value="row-del">− Delete Row</option>
+          </optgroup>
+          <optgroup label="Columns">
+            <option value="col-left">+ Col Left</option>
+            <option value="col-right">+ Col Right</option>
+            <option value="col-del">− Delete Col</option>
+          </optgroup>
+          <optgroup label="Danger">
+            <option value="del-table">🗑 Delete Table</option>
+          </optgroup>
+        </select>
 
-          {sectionSep}
+        {sectionSep}
 
-          {/* Image */}
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept="image/*"
-            className="hidden"
-            onChange={async (e) => {
-              const f = e.target.files?.[0]
-              if (f) await handleUploadAndInsert(f)
-              if (fileInputRef.current) fileInputRef.current.value = ''
-            }}
-          />
-          <button
-            type="button"
-            className={btn(uploading)}
-            onClick={() => fileInputRef.current?.click()}
-            disabled={uploading}
-            aria-label="Insert image">
-            {uploading ? <Loader2 className="animate-spin" size={16} /> : <ImageIcon size={16} />}
-          </button>
+        {/* Image */}
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/*"
+          className="hidden"
+          onChange={async (e) => {
+            const f = e.target.files?.[0]
+            if (f) await handleUploadAndInsert(f)
+            if (fileInputRef.current) fileInputRef.current.value = ''
+          }}
+        />
+        <button
+          type="button"
+          className={btn(uploading)}
+          onClick={() => fileInputRef.current?.click()}
+          disabled={uploading}
+          aria-label="Insert image">
+          {uploading ? <Loader2 className="animate-spin" size={16} /> : <ImageIcon size={16} />}
+        </button>
 
-          {sectionSep}
+        {sectionSep}
 
-          {/* History & clear */}
-          <button type="button" className={btn(false)} onClick={() => exec('undo')} aria-label="Undo">
-            <Undo2 size={16} />
-          </button>
-          <button type="button" className={btn(false)} onClick={() => exec('redo')} aria-label="Redo">
-            <Redo2 size={16} />
-          </button>
-          <button type="button" className={btn(false)} onClick={clearFormatting} aria-label="Clear formatting">
-            <Eraser size={16} />
-          </button>
-        </div>
+        {/* History & clear */}
+        {/* <button type="button" className={btn(false)} onClick={() => exec('undo')} aria-label="Undo">
+          <Undo2 size={16} />
+        </button>
+        <button type="button" className={btn(false)} onClick={() => exec('redo')} aria-label="Redo">
+          <Redo2 size={16} />
+        </button> */}
+        <button type="button" className={btn(false)} onClick={clearFormatting} aria-label="Clear formatting">
+          <Eraser size={16} />
+        </button>
       </div>
 
       {/* Editor */}
