@@ -53,7 +53,7 @@ export async function generateMetadata({ params }: PageParams): Promise<Metadata
       return { title: 'Artikel tidak ditemukan', robots: { index: false, follow: false } }
     }
 
-    const title = article.title
+    const title = `${article.title} - Bagian Organisasi Kutai Barat`
     const descRaw =
       stripHtml(article.excerpt || article.content || '').slice(0, 160) ||
       (article.category?.name ? `Kategori: ${article.category.name}` : 'Artikel')

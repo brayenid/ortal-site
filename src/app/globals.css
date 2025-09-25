@@ -144,3 +144,40 @@ td {
 .main-article img {
   @apply rounded-lg;
 }
+
+.main-article .rt-table-wrap {
+  @apply w-full overflow-x-auto text-xs sm:text-sm;
+}
+.main-article .rt-table {
+  @apply w-full border-collapse;
+}
+
+.main-article .rt-table th,
+.main-article .rt-table td {
+  @apply border border-slate-200 align-top bg-white p-4 box-content;
+}
+
+/* --- Pastikan konten sel menghormati padding --- */
+/* Hilangkan margin default elemen pertama & terakhir di dalam sel */
+.main-article .rt-table td > :first-child {
+  @apply mt-0;
+}
+.main-article .rt-table td > :last-child {
+  @apply mb-0;
+}
+
+/* List di dalam sel: bullets berada di dalam padding sel */
+.main-article .rt-table td ul,
+.main-article .rt-table td ol {
+  @apply list-inside pl-5 m-0;
+}
+
+/* Paragraf di dalam sel: rapikan margin */
+.main-article .rt-table td p {
+  @apply my-1;
+}
+
+/* Kalau ada figure/gambar di sel, tetap mengikuti lebar sel */
+.main-article .rt-table td .rt-figure img {
+  @apply max-w-full h-auto;
+}
