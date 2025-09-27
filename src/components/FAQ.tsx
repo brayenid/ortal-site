@@ -1,6 +1,5 @@
-// src/components/FAQ.tsx
 import { prisma } from '@/lib/prisma'
-import Link from 'next/link'
+import { FAQList, FaqItem } from './FAQList'
 
 const slugify = (s: string) =>
   s
@@ -16,6 +15,14 @@ export async function FAQ() {
     orderBy: { createdAt: 'desc' },
     take: 8
   })
+
+  // mapping ke bentuk yang dipakai client
+  const data: FaqItem[] = items.map((f) => ({
+    id: String(f.id),
+    question: f.question,
+    answer: f.answer,
+    slug: `faq-${slugify(f.question)}`
+  }))
 
   return (
     <section className="bg-gradient-to-b from-slate-50 to-white">
@@ -38,41 +45,7 @@ export async function FAQ() {
         </div>
 
         {/* List */}
-        {items.length === 0 ? (
-          <div className="card text-slate-600">Belum ada FAQ.</div>
-        ) : (
-          <ul className="grid gap-4 md:grid-cols-2 list-none !pl-0">
-            {items.map((f) => {
-              const id = `faq-${slugify(f.question)}`
-              return (
-                <li key={f.id} className="min-w-0 !mt-0">
-                  <details
-                    id={id}
-                    className="group rounded-2xl border border-slate-200 bg-white p-2 px-4 shadow-sm transition hover:shadow-md open:shadow-md">
-                    <summary className="flex cursor-pointer list-none items-start justify-between gap-4">
-                      <h3 className="text-base sm:text-lg font-medium text-slate-900 min-w-0">
-                        <span className="block truncate">{f.question}</span>
-                      </h3>
-                      {/* Icon plus/minus */}
-                      <span
-                        aria-hidden
-                        className="mt-0.5 inline-grid size-7 place-items-center rounded-full border text-white transition group-open:rotate-45 bg-primary">
-                        <svg width="16" height="16" viewBox="0 0 24 24">
-                          <path d="M11 5h2v14h-2zM5 11h14v2H5z" fill="currentColor" />
-                        </svg>
-                      </span>
-                    </summary>
-
-                    <div className="mt-3 text-sm text-slate-700">
-                      {/* jaga line break dari teks biasa */}
-                      <p className="whitespace-pre-line">{f.answer}</p>
-                    </div>
-                  </details>
-                </li>
-              )
-            })}
-          </ul>
-        )}
+        {data.length === 0 ? <div className="card text-slate-600">Belum ada FAQ.</div> : <FAQList items={data} />}
       </div>
     </section>
   )

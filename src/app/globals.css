@@ -13,6 +13,7 @@
 html {
   @apply scroll-smooth;
 }
+
 body {
   @apply bg-white text-slate-800 antialiased;
 }
@@ -149,7 +150,11 @@ td {
   @apply w-full overflow-x-auto text-sm sm:text-sm;
 }
 .main-article .rt-table {
-  @apply w-full border-collapse;
+  @apply w-full border-collapse rounded-md;
+}
+
+.main-article .rt-table th {
+  @apply !bg-gray-50;
 }
 
 .main-article .rt-table th,

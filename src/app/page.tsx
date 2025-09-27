@@ -62,7 +62,6 @@ export const metadata: Metadata = {
     apple: [{ url: '/apple-touch-icon.png', sizes: '180x180' }],
     other: [{ rel: 'mask-icon', url: '/safari-pinned-tab.svg', color: '#0ea5e9' }]
   },
-  themeColor: [{ media: '(prefers-color-scheme: light)', color: '#ffffff' }],
   robots: {
     index: true,
     follow: true,

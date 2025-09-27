@@ -25,7 +25,14 @@ export default async function Jumbotron({ children }: Props) {
           <div className="flex min-h-screen items-center py-16">
             <div className="max-w-2xl text-white text-center sm:text-left">
               <div className="flex justify-center sm:justify-start mb-4">
-                <Image src="/berakhlak2.png" alt="berakhlak" width={200} height={200} />
+                <Image
+                  src="/berakhlak2.png"
+                  alt="berakhlak"
+                  className="h-auto w-44 sm:w-56"
+                  width={200}
+                  height={200}
+                  unoptimized
+                />
               </div>
               <h1 className="text-4xl md:text-6xl font-bold tracking-tight">{jumbotron.title}</h1>
               {jumbotron.subtitle ? (

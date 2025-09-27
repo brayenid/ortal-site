@@ -7,7 +7,7 @@ import Breadcrumbs, { type Crumb } from '@/components/Breadcrumbs'
 import Link from 'next/link'
 import BookmarkButton from '@/components/BookmarkButton'
 import DisqusThread from '@/components/Disqus'
-import { Pen, User } from 'lucide-react'
+import { Calendar, Pen, User } from 'lucide-react'
 
 export const runtime = 'nodejs'
 export const revalidate = 300 // 5 menit
@@ -113,7 +113,7 @@ export default async function ArtikelDetailPage({ params }: PageParams) {
   }
 
   const canonical = new URL(`/artikel/${article.slug}`, BASE_URL).toString()
-  const dateStr = new Date(article.createdAt).toLocaleDateString('id-ID', { dateStyle: 'long' })
+  const dateStr = new Date(article.createdAt).toLocaleDateString('id-ID', { dateStyle: 'full' })
 
   // Breadcrumbs
   const crumbs: Crumb[] = [
@@ -138,7 +138,10 @@ export default async function ArtikelDetailPage({ params }: PageParams) {
               </Link>
             )}
 
-            <p className="text-sm text-slate-500">{dateStr}</p>
+            <div className="flex gap-2 items-center text-slate-500">
+              <Calendar size={14} />
+              <p className="text-sm">{dateStr}</p>
+            </div>
             {checkCreatedBy(article.updatedBy.id, article.createdBy.id) ? (
               <div className="text-sm text-slate-500 flex items-center gap-2 ">
                 <User size={14} />
