@@ -289,7 +289,7 @@ export default async function LinksShowcase({
               <div
                 className={clsx(
                   'flex',
-                  iconPosition === 'top' ? 'flex-col items-start' : 'items-center',
+                  iconPosition === 'top' ? 'flex-col items-center !mt-2' : 'items-center',
                   sz.padX,
                   sz.padY,
                   sz.gap

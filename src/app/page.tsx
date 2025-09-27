@@ -10,9 +10,9 @@ import { BannerCarousel } from '@/components/BannerCarousel'
 import LinksShowcase from '@/components/LinksShowcase'
 
 const SITE_NAME = 'Bagian Organisasi Kutai Barat'
-const SITE_DESC = 'Selamat datang di website Bagian Organisasi Kutai Barat'
+const SITE_DESC = 'Selamat datang di Portal Informasi resmi Bagian Organisasi Kutai Barat'
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000'
-const OG_IMAGE = '/ortal-bg.jpeg'
+const OG_IMAGE = '/ortalbg.jpeg'
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -94,7 +94,7 @@ export default function HomePage() {
     <div>
       <Jumbotron />
       <BannerCarousel />
-      <LinksShowcase variant="card" color="primary" descLines="full" size="lg" iconPosition="left" columns={2} />
+      <LinksShowcase variant="card" color="primary" descLines="full" size="lg" iconPosition="left" columns={3} />
       <TeamChips className="mb-14 container" />
       <div id="main" tabIndex={-1} aria-label="Daftar artikel">
         <ArticleList title="Artikel Terbaru" />

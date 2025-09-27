@@ -7,7 +7,7 @@ import Breadcrumbs, { type Crumb } from '@/components/Breadcrumbs'
 import Link from 'next/link'
 import BookmarkButton from '@/components/BookmarkButton'
 import DisqusThread from '@/components/Disqus'
-import { Pen, PencilRulerIcon, User } from 'lucide-react'
+import { Pen, User } from 'lucide-react'
 
 export const runtime = 'nodejs'
 export const revalidate = 300 // 5 menit
@@ -191,12 +191,7 @@ export default async function ArtikelDetailPage({ params }: PageParams) {
 
           <article className="prose max-w-none main-article" dangerouslySetInnerHTML={{ __html: article.content }} />
           <div className="my-10 border-t pt-10">
-            <DisqusThread
-              key={article.id}
-              identifier={article.id} // atau article.slug (asal konsisten)
-              title={article.title}
-              url={canonical}
-            />
+            <DisqusThread key={article.id} identifier={article.id} title={article.title} url={canonical} />
           </div>
         </main>
 
@@ -205,7 +200,7 @@ export default async function ArtikelDetailPage({ params }: PageParams) {
           <div className="sticky top-20 space-y-12">
             {/* Artikel Terkait */}
             <div>
-              <div className="font-semibold mb-3">Artikel Lain</div>
+              <div className="font-semibold mb-3">Artikel Terkait</div>
               {related.length ? (
                 <ul className="space-y-3 list-none p-0">
                   {related.map((r) => (

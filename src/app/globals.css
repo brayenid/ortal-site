@@ -146,7 +146,7 @@ td {
 }
 
 .main-article .rt-table-wrap {
-  @apply w-full overflow-x-auto text-xs sm:text-sm;
+  @apply w-full overflow-x-auto text-sm sm:text-sm;
 }
 .main-article .rt-table {
   @apply w-full border-collapse;
@@ -154,7 +154,7 @@ td {
 
 .main-article .rt-table th,
 .main-article .rt-table td {
-  @apply border border-slate-200 align-top bg-white p-4 box-content;
+  @apply border border-slate-200 align-top bg-white p-2 box-content;
 }
 
 /* --- Pastikan konten sel menghormati padding --- */
