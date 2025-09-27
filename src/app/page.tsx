@@ -94,7 +94,7 @@ export default function HomePage() {
     <div>
       <Jumbotron />
       <BannerCarousel />
-      <LinksShowcase variant="card" color="primary" descLines="full" size="lg" iconPosition="left" columns={3} />
+      <LinksShowcase variant="card" color="primary" descLines="full" size="lg" iconPosition="left" columns={2} />
       <TeamChips className="mb-14 container" />
       <div id="main" tabIndex={-1} aria-label="Daftar artikel">
         <ArticleList title="Artikel Terbaru" />
