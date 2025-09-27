@@ -137,6 +137,7 @@ export default function ProfilePage() {
           <input
             name="name"
             required
+            placeholder="Tulis nama kantor"
             value={name}
             onChange={(e) => setName(e.target.value)}
             className="w-full rounded-xl border-slate-300"
@@ -149,6 +150,7 @@ export default function ProfilePage() {
             name="address"
             rows={3}
             value={address}
+            placeholder="Tulis alamat"
             onChange={(e) => setAddress(e.target.value)}
             className="w-full rounded-xl border-slate-300"
           />
@@ -175,6 +177,7 @@ export default function ProfilePage() {
             <input
               name="email"
               value={email}
+              placeholder="Tulis email"
               onChange={(e) => setEmail(e.target.value)}
               className="w-full rounded-xl border-slate-300"
             />
@@ -184,6 +187,7 @@ export default function ProfilePage() {
             <input
               name="phone"
               value={phone}
+              placeholder="Tulis telepon"
               onChange={(e) => setPhone(e.target.value)}
               className="w-full rounded-xl border-slate-300"
             />

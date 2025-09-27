@@ -103,7 +103,7 @@ export function FAQList({ items }: { items: FaqItem[] }) {
   const right = items.slice(mid)
 
   return (
-    <div className="flex flex-col md:flex-row gap-0 md:gap-4">
+    <div className="flex flex-col md:flex-row gap-4">
       {/* Kolom kiri */}
       <ul className="flex-1 m-0 list-none !pl-0 flex flex-col gap-4">
         {left.map((it) => (

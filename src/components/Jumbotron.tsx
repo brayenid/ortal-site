@@ -4,7 +4,7 @@ import Image from 'next/image'
 
 /* eslint-disable @next/next/no-img-element */
 type Props = {
-  children?: React.ReactNode // optional: tombol CTA dsb
+  children?: React.ReactNode
 }
 
 export default async function Jumbotron({ children }: Props) {

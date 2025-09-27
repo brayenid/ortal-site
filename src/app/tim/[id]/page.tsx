@@ -38,7 +38,7 @@ export default async function TeamDetailPage({ params }: Props) {
   return (
     <div className="container py-10">
       <div className="mb-6 flex items-center justify-between">
-        <h1 className="text-2xl font-bold">{team.name}</h1>
+        <h1 className="text-lg font-semibold tracking-tight text-slate-800">{team.name}</h1>
         <Link href="/#tim" className="text-sm text-secondary">
           ← Kembali
         </Link>
@@ -59,22 +59,20 @@ export default async function TeamDetailPage({ params }: Props) {
       {/* Tim lainnya */}
       {others.length > 0 && (
         <section className="mt-8">
-          <h2 className="h4 mb-3">Tim lainnya</h2>
-          <div className="rounded-2xl border border-slate-200 bg-white shadow-sm p-4">
-            <div className="flex flex-wrap gap-2">
-              {others.map((t) => (
-                <Link
-                  key={t.id}
-                  href={`/tim/${t.id}`}
-                  title={t.name}
-                  className="inline-flex items-center gap-2 rounded-full border border-slate-300 bg-slate-50 px-3 py-1.5 text-sm text-slate-800 hover:bg-slate-100 transition">
-                  <span className="grid place-items-center size-5 rounded-full bg-slate-200 text-[11px] font-semibold text-slate-700">
-                    {initial(t.name)}
-                  </span>
-                  <span className="truncate max-w-[14rem]">{t.name}</span>
-                </Link>
-              ))}
-            </div>
+          <h2 className="text-lg font-semibold tracking-tight text-slate-800">Tim lainnya</h2>
+          <div className="flex flex-wrap gap-2">
+            {others.map((t) => (
+              <Link
+                key={t.id}
+                href={`/tim/${t.id}`}
+                title={t.name}
+                className="inline-flex items-center gap-2 rounded-full border border-slate-300 bg-slate-50 px-3 py-1.5 text-sm text-slate-800 hover:bg-slate-100 transition">
+                <span className="grid place-items-center size-5 rounded-full bg-slate-200 text-[11px] font-semibold text-slate-700">
+                  {initial(t.name)}
+                </span>
+                <span className="truncate max-w-[14rem]">{t.name}</span>
+              </Link>
+            ))}
           </div>
         </section>
       )}

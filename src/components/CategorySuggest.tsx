@@ -162,7 +162,7 @@ export const CategorySuggest = ({
         <div
           id="category-suggest-listbox"
           role="listbox"
-          className="absolute z-50 mt-1 w-full rounded-xl border border-slate-200 bg-white shadow-lg overflow-hidden">
+          className="absolute z-[120] mt-1 w-full rounded-xl border border-slate-200 bg-white shadow-lg overflow-hidden">
           {/* Loading */}
           {loading && <div className="px-3 py-2 text-sm text-slate-500">Memuat…</div>}
 
