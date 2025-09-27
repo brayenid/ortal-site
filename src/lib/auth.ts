@@ -5,7 +5,8 @@ import bcrypt from 'bcrypt'
 import { verifyRecaptcha } from '@/lib/recaptcha'
 
 export const authConfig: NextAuthOptions = {
-  session: { strategy: 'jwt' },
+  session: { strategy: 'jwt', maxAge: 60 * 60 * 24 * 7 }, // 7 hari
+  jwt: { maxAge: 60 * 60 * 24 * 7 }, // selaras dg session
   providers: [
     Credentials({
       name: 'Credentials',
