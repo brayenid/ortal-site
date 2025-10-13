@@ -117,7 +117,6 @@ const ITEMS: Item[] = [
 ]
 
 export default async function AdminHome() {
-  // Middleware sudah mengawal akses, tapi kita tetap ambil session untuk email & role
   const session = await getServerSession(authConfig)
   if (!session?.user) redirect('/login')
 

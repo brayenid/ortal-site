@@ -10,6 +10,7 @@ import NextTopLoader from 'nextjs-toploader'
 import { TawkWidget } from '@/components/TawkWidget'
 import SocialLinks from '@/components/SocialLinks'
 import SkipToArticles from '@/components/SkipToArticles'
+import { GoogleAnalytics } from '@next/third-parties/google'
 
 export const revalidate = 300
 
@@ -19,6 +20,8 @@ const poppins = Poppins({
 })
 
 export default async function RootLayout({ children }: { children: ReactNode }) {
+  const GAId = process.env.NEXT_PUBLIC_GA ?? ''
+
   const session = await getServerSession(authConfig)
   const office = await getOffice()
   return (
@@ -42,6 +45,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
           </div>
         </footer>
         <TawkWidget />
+        {GAId ? <GoogleAnalytics gaId={GAId} /> : ''}
       </body>
     </html>
   )
