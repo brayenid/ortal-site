@@ -4,6 +4,8 @@ import { prisma } from '@/lib/prisma'
 import bcrypt from 'bcrypt'
 import { verifyRecaptcha } from '@/lib/recaptcha'
 
+// comment
+
 export const authConfig: NextAuthOptions = {
   session: { strategy: 'jwt', maxAge: 60 * 60 * 24 * 7 }, // 7 hari
   jwt: { maxAge: 60 * 60 * 24 * 7 }, // selaras dg session
